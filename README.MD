@@ -60,3 +60,5 @@ See [LICENSE][license-url] for more information.
 ## Build
 
 To build the project run `mvn install` then you can use the jar in the target folder, to run it do `java -jar target/ScaraGUI.jar` for example
+
+[license-url]: https://github.com/DoubleNico/ScaraGUI/blob/main/LICENSE
