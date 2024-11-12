@@ -1,7 +1,7 @@
 package me.doublenico.scaraGUI;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class ScaraGUI extends JFrame {
 
@@ -17,6 +17,12 @@ public class ScaraGUI extends JFrame {
         setSize(500, 600);
         setLocationRelativeTo(null);
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(10, 10));
         contentPane.setBackground(new Color(22, 22, 23));
@@ -29,28 +35,38 @@ public class ScaraGUI extends JFrame {
         JLabel titleLabel = new JLabel("ScaraGUI");
         titleLabel.setFont(new Font("Inter", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
 
         loadAppButton = new JButton("Load App");
-        loadAppButton.setBackground(new Color(0, 122, 204));
-        loadAppButton.setForeground(Color.BLACK);
+        loadAppButton.setBackground(new Color(9, 125, 201));
+        loadAppButton.setForeground(Color.WHITE);
         loadAppButton.setFont(new Font("Inter", Font.BOLD, 12));
         loadAppButton.setFocusPainted(false);
+        loadAppButton.setOpaque(true);
+        loadAppButton.setPreferredSize(new Dimension(105, 33));
+        loadAppButton.setMinimumSize(new Dimension(105, 33));
+        loadAppButton.setMaximumSize(new Dimension(105, 33));
 
         topPanel.add(titleLabel);
         topPanel.add(Box.createHorizontalGlue());
         topPanel.add(loadAppButton);
+        topPanel.add(Box.createRigidArea(new Dimension(15, 0)));
 
         JPanel centerPanel = new JPanel();
         centerPanel.setBorder(BorderFactory.createEmptyBorder(140, 0, 0, 0));
-        centerPanel.setPreferredSize(new Dimension (468, 400));
+        centerPanel.setPreferredSize(new Dimension(468, 400));
         centerPanel.setOpaque(false);
+
         createNewAppButton = new JButton("Create new Scara App");
-        createNewAppButton.setBackground(Color.GREEN);
+        createNewAppButton.setBackground(new Color(42, 255, 13));
         createNewAppButton.setForeground(Color.BLACK);
         createNewAppButton.setFont(new Font("Inter", Font.BOLD, 16));
         createNewAppButton.setFocusPainted(false);
-        createNewAppButton.setPreferredSize(new Dimension(250, 60));
+        createNewAppButton.setOpaque(true);
+        createNewAppButton.setBorder(BorderFactory.createEmptyBorder());
+        createNewAppButton.setPreferredSize(new Dimension(214, 49));
+
+
         centerPanel.add(createNewAppButton);
 
         JPanel bottomPanel = new JPanel();
@@ -74,10 +90,6 @@ public class ScaraGUI extends JFrame {
         appItemsPanel.add(grabBeerApp);
         AppItem grabBeerApp2 = new AppItem("Grab Beer App2");
         appItemsPanel.add(grabBeerApp2);
-        AppItem grabBeerApp3 = new AppItem("Grab Beer App3");
-        appItemsPanel.add(grabBeerApp3);
-        AppItem grabBeerApp4 = new AppItem("Grab Beer App4");
-        appItemsPanel.add(grabBeerApp4);
 
         bottomPanel.add(scrollPane, BorderLayout.PAGE_START);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -87,6 +99,8 @@ public class ScaraGUI extends JFrame {
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(contentPane);
+        revalidate();
+        repaint();
         setVisible(true);
     }
 
