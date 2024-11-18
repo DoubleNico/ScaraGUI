@@ -11,7 +11,7 @@ class AppItem extends JPanel {
         setLayout(new BorderLayout());
         setOpaque(true);
         setBackground(new Color(50, 50, 50));
-        setPreferredSize(new Dimension(468, 60));
+        setPreferredSize(new Dimension(468, 40));
 
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
@@ -31,7 +31,7 @@ class AppItem extends JPanel {
         deleteButton.setForeground(Color.WHITE);
         deleteButton.setFocusPainted(false);
         deleteButton.setOpaque(true);
-        deleteButton.setPreferredSize(new Dimension(80, 33)); // Fixed size
+        deleteButton.setPreferredSize(new Dimension(80, 30));
 
         modifyButton = new JButton("Modify");
         modifyButton.setBackground(new Color(0, 122, 204));
@@ -39,14 +39,24 @@ class AppItem extends JPanel {
         modifyButton.setForeground(Color.WHITE);
         modifyButton.setFocusPainted(false);
         modifyButton.setOpaque(true);
-        modifyButton.setPreferredSize(new Dimension(80, 33));
+        modifyButton.setPreferredSize(new Dimension(80, 30));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setOpaque(false);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(modifyButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 5, 0, 5);
 
-        add(labelPanel, BorderLayout.PAGE_START);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        buttonPanel.add(deleteButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        buttonPanel.add(modifyButton, gbc);
+
+        add(labelPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.EAST);
     }
 }
