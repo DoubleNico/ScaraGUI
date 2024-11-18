@@ -17,7 +17,7 @@ public class ScaraGUI extends JFrame {
     public ScaraGUI() {
         super("ScaraGUI");
         FlatMacDarkLaf.setup();
-        if( SystemInfo.isMacFullWindowContentSupported ) getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+        if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
