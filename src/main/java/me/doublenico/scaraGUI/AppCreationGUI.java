@@ -1,6 +1,8 @@
 package me.doublenico.scaraGUI;
 
+import com.formdev.flatlaf.extras.FlatDesktop;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.util.SystemInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,12 +15,9 @@ public class AppCreationGUI extends JFrame {
         super("Editing " + name);
         this.name = name;
         FlatMacDarkLaf.setup();
+        if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+        getRootPane().putClientProperty( "apple.awt.fullscreenable", true );
 
-        System.setProperty("apple.awt.application.appearance", "system");
-        System.setProperty(ScaraGUI.JETBRAINS_AWT_WINDOW_DARK_APPEARANCE, "true");
-
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(954, 600);
         setLocationRelativeTo(null);
 
@@ -81,6 +80,11 @@ public class AppCreationGUI extends JFrame {
 
         setContentPane(contentPane);
         setVisible(true);
+        FlatDesktop.setQuitHandler(response -> {
+            int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Quit ScaraGUI", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) response.performQuit();
+            else response.cancelQuit();
+        });
     }
 
     private JPanel createFormPanel() {
