@@ -19,8 +19,6 @@ public class CreateAppModal extends JDialog {
         setLayout(new GridBagLayout());
         setLocationRelativeTo(this);
 
-
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -48,6 +46,8 @@ public class CreateAppModal extends JDialog {
         JTextField locationField = new JTextField();
         locationField.setPreferredSize(new Dimension(200, 30));
         locationField.setEditable(false);
+        String userDir = System.getProperty("user.dir");
+        if (userDir != null) locationField.setText(System.getProperty("user.dir"));
         gbc.gridx = 1;
         gbc.gridy = 1;
 
@@ -60,6 +60,7 @@ public class CreateAppModal extends JDialog {
         chooseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (locationField.getText() != null && !locationField.getText().isEmpty()) fileChooser.setCurrentDirectory(new File(locationField.getText()));
             int returnValue = fileChooser.showOpenDialog(this);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 locationField.setText(fileChooser.getSelectedFile().getAbsolutePath());

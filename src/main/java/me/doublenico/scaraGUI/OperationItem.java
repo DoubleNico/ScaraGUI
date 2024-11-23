@@ -10,7 +10,7 @@ public class OperationItem extends JPanel {
     private JButton moveUpButton;
     private JButton moveDownButton;
 
-    public OperationItem(String appName) {
+    public OperationItem(String appName, AppCreationGUI parent) {
         setLayout(new GridBagLayout());
         setOpaque(false);
         setPreferredSize(new Dimension(200, 60));
@@ -24,9 +24,13 @@ public class OperationItem extends JPanel {
         appLabel.setEditable(false);
 
         deleteButton = createButton("x", new Color(204, 0, 0), "Delete this item");
+        deleteButton.addActionListener(e -> parent.deleteOperation(this));
         addButton = createButton("+", new Color(0, 204, 0), "Add a new item");
+        addButton.addActionListener(e -> parent.addOperation("Operation " + (parent.getOperations().size() + 1)));
         moveUpButton = createButton("^", new Color(9, 125, 201), "Move this item up");
+        moveUpButton.addActionListener(e -> parent.moveOperationUp(this));
         moveDownButton = createButton("v", new Color(9, 125, 201), "Move this item down");
+        moveDownButton.addActionListener(e -> parent.moveOperationDown(this));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 5, 0, 5);
@@ -63,13 +67,25 @@ public class OperationItem extends JPanel {
         add(buttonPanel, gbc);
     }
 
+    public void setMoveUpEnabled(boolean enabled) {
+        moveUpButton.setEnabled(enabled);
+    }
+
+    public void setMoveDownEnabled(boolean enabled) {
+        moveDownButton.setEnabled(enabled);
+    }
+
+    public void setDeleteEnabled(boolean enabled) {
+        deleteButton.setEnabled(enabled);
+    }
+
     private JButton createButton(String text, Color bgColor, String toolTip) {
         JButton button = new JButton(text);
         button.setFont(new Font("Inter", Font.BOLD, 8));
         button.setForeground(Color.BLACK);
         button.setBackground(bgColor);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(2, 0,2, 0));
+        button.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
         button.setPreferredSize(new Dimension(25, 20));
         button.setToolTipText(toolTip);
         return button;

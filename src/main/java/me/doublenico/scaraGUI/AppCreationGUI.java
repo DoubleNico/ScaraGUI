@@ -6,57 +6,48 @@ import com.formdev.flatlaf.util.SystemInfo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppCreationGUI extends JFrame {
 
     private final String name;
+    private final List<OperationItem> operations;
+    private final JPanel operationsPanel;
 
     public AppCreationGUI(String name) {
         super("Editing " + name);
         this.name = name;
         FlatMacDarkLaf.setup();
+
         if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
         getRootPane().putClientProperty( "apple.awt.fullscreenable", true );
 
+        FlatDesktop.setQuitHandler(response -> {
+            int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Quit ScaraGUI", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) response.performQuit();
+            else response.cancelQuit();
+        });
+
+
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(954, 600);
         setLocationRelativeTo(null);
+
+        operations = new ArrayList<>();
+        operationsPanel = new JPanel();
+        operationsPanel.setLayout(new BoxLayout(operationsPanel, BoxLayout.Y_AXIS));
+        operationsPanel.setOpaque(false);
 
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.setBackground(new Color(22, 22, 23));
 
-        JPanel sideBar = new JPanel();
-        sideBar.setLayout(new BoxLayout(sideBar, BoxLayout.Y_AXIS));
-        sideBar.setBackground(new Color(38, 38, 38));
-        sideBar.setPreferredSize(new Dimension(250, 600));
-
-        JLabel scaraName = new JLabel("ScaraGUI");
-        scaraName.setFont(new Font("Inter", Font.BOLD, 24));
-        scaraName.setForeground(Color.WHITE);
-        scaraName.setAlignmentX(Component.CENTER_ALIGNMENT);
-        scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        sideBar.add(scaraName);
-
-        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-        separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separator.setBackground(Color.BLACK);
-        separator.setForeground(Color.BLACK);
-        sideBar.add(separator);
-
-        for (int i = 0; i < 5; i++) {
-            OperationItem operationItem = new OperationItem("Operation " + (i + 1));
-            operationItem.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-            operationItem.setMaximumSize(new Dimension(230, 58)); // Adjusted width
-            sideBar.add(operationItem);
-            sideBar.add(Box.createVerticalStrut(5));
-        }
-        sideBar.add(Box.createVerticalGlue());
-
+        JPanel sideBar = createSidebar();
         JScrollPane scrollPane = new JScrollPane(sideBar);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.setOpaque(true);
-        scrollPane.getViewport().setOpaque(true);
         contentPane.add(scrollPane, BorderLayout.WEST);
 
         JPanel rightPanel = new JPanel(new BorderLayout());
@@ -79,12 +70,33 @@ public class AppCreationGUI extends JFrame {
         contentPane.add(rightPanel, BorderLayout.CENTER);
 
         setContentPane(contentPane);
+
+        addOperation("Default");
         setVisible(true);
-        FlatDesktop.setQuitHandler(response -> {
-            int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?", "Quit ScaraGUI", JOptionPane.YES_NO_OPTION);
-            if (option == JOptionPane.YES_OPTION) response.performQuit();
-            else response.cancelQuit();
-        });
+    }
+
+    private JPanel createSidebar() {
+        JPanel sideBar = new JPanel();
+        sideBar.setLayout(new BoxLayout(sideBar, BoxLayout.Y_AXIS));
+        sideBar.setBackground(new Color(38, 38, 38));
+        sideBar.setPreferredSize(new Dimension(250, 600));
+
+        JLabel scaraName = new JLabel("ScaraGUI");
+        scaraName.setFont(new Font("Inter", Font.BOLD, 24));
+        scaraName.setForeground(Color.WHITE);
+        scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        scaraName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sideBar.add(scaraName);
+
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separator.setBackground(Color.BLACK);
+        separator.setForeground(Color.BLACK);
+        sideBar.add(separator);
+
+        sideBar.add(operationsPanel);
+        sideBar.add(Box.createVerticalGlue());
+        return sideBar;
     }
 
     private JPanel createFormPanel() {
@@ -114,6 +126,11 @@ public class AppCreationGUI extends JFrame {
             textField.setForeground(Color.WHITE);
             textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             formPanel.add(textField, gbc);
+
+            gbc.gridx = 2;
+            gbc.weightx = 0.1;
+            JLabel helpIcon = new JLabel("Help");
+            formPanel.add(helpIcon, gbc);
         }
 
         return formPanel;
@@ -137,8 +154,65 @@ public class AppCreationGUI extends JFrame {
         return button;
     }
 
-    @Override
-    public String getName() {
-        return name;
+    public void addOperation(String name) {
+        OperationItem operation = new OperationItem(name, this);
+        operations.add(operation);
+        operation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0,0));
+        operation.setMaximumSize(new Dimension(230, 58));
+        operationsPanel.add(operation);
+        operationsPanel.add(Box.createVerticalStrut(5));
+        updateOperationStates();
+        operationsPanel.revalidate();
+        operationsPanel.repaint();
+    }
+
+    public void moveOperationUp(OperationItem item) {
+        int index = operations.indexOf(item);
+        if (index > 0) {
+            operations.remove(index);
+            operations.add(index - 1, item);
+            updateOperationsPanel();
+        }
+    }
+
+    public void moveOperationDown(OperationItem item) {
+        int index = operations.indexOf(item);
+        if (index < operations.size() - 1) {
+            operations.remove(index);
+            operations.add(index + 1, item);
+            updateOperationsPanel();
+        }
+    }
+
+    public void deleteOperation(OperationItem item) {
+        if (operations.size() == 1) return;
+        operations.remove(item);
+        operationsPanel.remove(item);
+        updateOperationStates();
+        operationsPanel.revalidate();
+        operationsPanel.repaint();
+    }
+
+    private void updateOperationStates() {
+        for (int i = 0; i < operations.size(); i++) {
+            OperationItem item = operations.get(i);
+            item.setMoveUpEnabled(i > 0);
+            item.setMoveDownEnabled(i < operations.size() - 1);
+            item.setDeleteEnabled(operations.size() > 1);
+        }
+    }
+
+    private void updateOperationsPanel() {
+        operationsPanel.removeAll();
+        for (OperationItem item : operations) {
+            operationsPanel.add(item);
+        }
+        updateOperationStates();
+        operationsPanel.revalidate();
+        operationsPanel.repaint();
+    }
+
+    public List<OperationItem> getOperations() {
+        return operations;
     }
 }
