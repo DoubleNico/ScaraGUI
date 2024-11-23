@@ -12,6 +12,7 @@ import java.util.List;
 public class AppCreationGUI extends JFrame {
 
     private final String name;
+    private JButton closeButton;
     private final List<OperationItem> operations;
     private final JPanel operationsPanel;
 
@@ -28,7 +29,6 @@ public class AppCreationGUI extends JFrame {
             if (option == JOptionPane.YES_OPTION) response.performQuit();
             else response.cancelQuit();
         });
-
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,9 +59,25 @@ public class AppCreationGUI extends JFrame {
 
         JButton deleteButton = createStyledButton("Delete", new Color(204, 0, 0));
         JButton saveButton = createStyledButton("Save", new Color(0, 122, 204));
+        JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
+        openSidebarButton.setVisible(false);
+        closeButton.addActionListener(e -> {
+            scrollPane.setVisible(false);
+            openSidebarButton.setVisible(true);
+            contentPane.revalidate();
+            contentPane.repaint();
+        });
+        openSidebarButton.addActionListener(e -> {
+            scrollPane.setVisible(true);
+            openSidebarButton.setVisible(false);
+            contentPane.revalidate();
+            contentPane.repaint();
+        });
+
 
         buttonPanel.add(deleteButton);
         buttonPanel.add(saveButton);
+        buttonPanel.add(openSidebarButton);
         rightPanel.add(buttonPanel, BorderLayout.NORTH);
 
         JPanel formPanel = createFormPanel();
@@ -81,12 +97,39 @@ public class AppCreationGUI extends JFrame {
         sideBar.setBackground(new Color(38, 38, 38));
         sideBar.setPreferredSize(new Dimension(250, 600));
 
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        headerPanel.setOpaque(false);
+
         JLabel scaraName = new JLabel("ScaraGUI");
         scaraName.setFont(new Font("Inter", Font.BOLD, 24));
         scaraName.setForeground(Color.WHITE);
         scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        scaraName.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sideBar.add(scaraName);
+
+        closeButton = new JButton("X");
+        closeButton.setFont(new Font("Inter", Font.BOLD, 12));
+        closeButton.setBackground(new Color(204, 0, 0));
+        closeButton.setForeground(Color.WHITE);
+        closeButton.setFocusPainted(false);
+        closeButton.setPreferredSize(new Dimension(40, 30));
+
+        JButton goBackButton = new JButton("<");
+        goBackButton.setFont(new Font("Inter", Font.BOLD, 12));
+        goBackButton.setBackground(new Color(204, 0, 0));
+        goBackButton.setForeground(Color.WHITE);
+        goBackButton.setFocusPainted(false);
+        goBackButton.setPreferredSize(new Dimension(40, 30));
+        goBackButton.addActionListener(e -> {
+            new ScaraGUI().setVisible(true);
+            dispose();
+        });
+
+        headerPanel.add(scaraName);
+        headerPanel.add(Box.createHorizontalGlue());
+        headerPanel.add(closeButton);
+        headerPanel.add(goBackButton);
+
+        sideBar.add(headerPanel);
 
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
@@ -98,7 +141,6 @@ public class AppCreationGUI extends JFrame {
         sideBar.add(Box.createVerticalGlue());
         return sideBar;
     }
-
     private JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(22, 22, 23));
