@@ -1,4 +1,4 @@
-package me.doublenico.scaraGUI;
+package me.doublenico.scaraGUI.gui.creation.components.form;
 
 public enum CreationLabel {
     NAME("Name", "Name", 0),
