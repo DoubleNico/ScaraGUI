@@ -1,4 +1,4 @@
-package me.doublenico.scaraGUI;
+package me.doublenico.scaraGUI.gui.main;
 
 import javax.swing.*;
 import java.awt.*;

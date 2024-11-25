@@ -1,4 +1,4 @@
-package me.doublenico.scaraGUI;
+package me.doublenico.scaraGUI.gui.creation.components.operation;
 
 import java.util.HashMap;
 
