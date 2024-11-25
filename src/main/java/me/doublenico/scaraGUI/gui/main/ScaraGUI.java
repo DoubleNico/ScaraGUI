@@ -1,7 +1,8 @@
-package me.doublenico.scaraGUI;
+package me.doublenico.scaraGUI.gui.main;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,6 @@ public class ScaraGUI extends JFrame {
     private JButton createNewAppButton;
 
     private JPanel appItemsPanel;
-    public static final String JETBRAINS_AWT_WINDOW_DARK_APPEARANCE = "jetbrains.awt.windowDarkAppearance";
 
     public ScaraGUI() {
         super("ScaraGUI");
@@ -100,15 +100,5 @@ public class ScaraGUI extends JFrame {
 
         setContentPane(contentPane);
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        if(SystemInfo.isMacOS ) {
-            System.setProperty( "apple.laf.useScreenMenuBar", "true" );
-            System.setProperty( "apple.awt.application.name", "ScaraGUI" );
-            System.setProperty( "apple.awt.application.appearance", "system" );
-            System.setProperty(JETBRAINS_AWT_WINDOW_DARK_APPEARANCE, "true");
-        }
-        SwingUtilities.invokeLater(ScaraGUI::new);
     }
 }
