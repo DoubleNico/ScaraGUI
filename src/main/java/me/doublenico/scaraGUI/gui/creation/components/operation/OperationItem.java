@@ -1,4 +1,6 @@
-package me.doublenico.scaraGUI;
+package me.doublenico.scaraGUI.gui.creation.components.operation;
+
+import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,10 +10,9 @@ import java.awt.event.MouseEvent;
 public class OperationItem extends JPanel {
 
     private Operation operation;
-    private JButton deleteButton;
-    private JButton addButton;
-    private JButton moveUpButton;
-    private JButton moveDownButton;
+    private final JButton deleteButton;
+    private final JButton moveUpButton;
+    private final JButton moveDownButton;
 
     public OperationItem(String appName, Operation operation, AppCreationGUI parent) {
         this.operation = operation;
@@ -19,16 +20,24 @@ public class OperationItem extends JPanel {
         setOpaque(false);
         setPreferredSize(new Dimension(200, 60));
 
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
+                parent.getOperationsPanel().loadOperation(OperationItem.this);
+            }
+        });
+
         JTextArea appLabel = getJTextArea(appName, parent);
 
         deleteButton = createButton("x", new Color(204, 0, 0), "Delete this item");
-        deleteButton.addActionListener(e -> parent.deleteOperation(this));
-        addButton = createButton("+", new Color(0, 204, 0), "Add a new item");
-        addButton.addActionListener(e -> parent.addOperation("Operation " + (parent.getOperations().size() + 1)));
+        deleteButton.addActionListener(e -> parent.getOperationsPanel().deleteOperation(this));
+        JButton addButton = createButton("+", new Color(0, 204, 0), "Add a new item");
+        addButton.addActionListener(e -> parent.getOperationsPanel().addOperation("Operation " + (parent.getOperationsPanel().getOperations().size())));
         moveUpButton = createButton("^", new Color(9, 125, 201), "Move this item up");
-        moveUpButton.addActionListener(e -> parent.moveOperationUp(this));
+        moveUpButton.addActionListener(e -> parent.getOperationsPanel().moveOperationUp(this));
         moveDownButton = createButton("v", new Color(9, 125, 201), "Move this item down");
-        moveDownButton.addActionListener(e -> parent.moveOperationDown(this));
+        moveDownButton.addActionListener(e -> parent.getOperationsPanel().moveOperationDown(this));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 5, 0, 5);
@@ -77,9 +86,11 @@ public class OperationItem extends JPanel {
         appLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                parent.loadOperation(OperationItem.this);
+                if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
+                parent.getOperationsPanel().loadOperation(OperationItem.this);
             }
         });
+
         return appLabel;
     }
 
