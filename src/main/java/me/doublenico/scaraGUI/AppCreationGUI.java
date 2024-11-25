@@ -7,12 +7,16 @@ import com.formdev.flatlaf.util.SystemInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AppCreationGUI extends JFrame {
 
-    private final String name;
+    private HashMap<CreationLabel, JTextField> textFields;
+    private OperationItem selectedOperation;
     private JButton closeButton;
+    private final OperationsHandler operationsHandler;
+    private final String name;
     private final List<OperationItem> operations;
     private final JPanel operationsPanel;
 
@@ -35,6 +39,8 @@ public class AppCreationGUI extends JFrame {
         setSize(954, 600);
         setLocationRelativeTo(null);
 
+        operationsHandler = new OperationsHandler();
+
         operations = new ArrayList<>();
         operationsPanel = new JPanel();
         operationsPanel.setLayout(new BoxLayout(operationsPanel, BoxLayout.Y_AXIS));
@@ -44,11 +50,7 @@ public class AppCreationGUI extends JFrame {
         contentPane.setBackground(new Color(22, 22, 23));
 
         JPanel sideBar = createSidebar();
-        JScrollPane scrollPane = new JScrollPane(sideBar);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        contentPane.add(scrollPane, BorderLayout.WEST);
+        contentPane.add(sideBar, BorderLayout.WEST);
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(new Color(22, 22, 23));
@@ -62,18 +64,19 @@ public class AppCreationGUI extends JFrame {
         JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
         openSidebarButton.setVisible(false);
         closeButton.addActionListener(e -> {
-            scrollPane.setVisible(false);
+            sideBar.setVisible(false);
             openSidebarButton.setVisible(true);
             contentPane.revalidate();
             contentPane.repaint();
         });
         openSidebarButton.addActionListener(e -> {
-            scrollPane.setVisible(true);
+            sideBar.setVisible(true);
             openSidebarButton.setVisible(false);
             contentPane.revalidate();
             contentPane.repaint();
         });
 
+        saveButton.addActionListener(e -> saveOperation());
 
         buttonPanel.add(deleteButton);
         buttonPanel.add(saveButton);
@@ -137,10 +140,17 @@ public class AppCreationGUI extends JFrame {
         separator.setForeground(Color.BLACK);
         sideBar.add(separator);
 
-        sideBar.add(operationsPanel);
-        sideBar.add(Box.createVerticalGlue());
+        JScrollPane operationsScrollPane = new JScrollPane(operationsPanel);
+        operationsScrollPane.setOpaque(false);
+        operationsScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        operationsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        operationsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        operationsScrollPane.getVerticalScrollBar().setBackground(new Color(38, 38, 38, 208));
+        sideBar.add(operationsScrollPane);
+
         return sideBar;
     }
+
     private JPanel createFormPanel() {
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(22, 22, 23));
@@ -150,28 +160,30 @@ public class AppCreationGUI extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        String[] labels = {"Name:", "Joint 1 Angle:", "Joint 2 Angle:", "Z Position:", "Gripper Value:", "Speed Value:"};
-
+        CreationLabel[] labels = {CreationLabel.NAME, CreationLabel.JOINT1, CreationLabel.JOINT2, CreationLabel.Z, CreationLabel.GRIPPER, CreationLabel.SPEED};
+        textFields = new HashMap<>();
         for (int i = 0; i < labels.length; i++) {
+            if (CreationLabel.getLabel(i) == null) continue;
             gbc.gridx = 0;
             gbc.gridy = i;
             gbc.weightx = 0.4;
-            JLabel label = createStyledLabel(labels[i]);
+            JLabel label = createStyledLabel(labels[i].name);
             formPanel.add(label, gbc);
 
             gbc.gridx = 1;
             gbc.weightx = 0.6;
-            JTextField textField = new JTextField(labels[i].equals("Name:") ? "Name" : labels[i].contains("Angle") ? "Angle" : "Value");
+            JTextField textField = new JTextField(labels[i].fieldName);
             textField.setPreferredSize(new Dimension(150, 30));
             textField.setFont(new Font("Inter", Font.PLAIN, 14));
             textField.setBackground(new Color(50, 50, 50));
             textField.setForeground(Color.WHITE);
             textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             formPanel.add(textField, gbc);
-
+            textFields.put(labels[i], textField);
             gbc.gridx = 2;
             gbc.weightx = 0.1;
-            JLabel helpIcon = new JLabel("Help");
+            JLabel helpIcon = new JLabel(new ImageIcon("src/main/resources/help-icon.png"));
+            helpIcon.setMaximumSize(new Dimension(40, 40));
             formPanel.add(helpIcon, gbc);
         }
 
@@ -196,10 +208,67 @@ public class AppCreationGUI extends JFrame {
         return button;
     }
 
+    public void loadOperation(OperationItem operationItem) {
+        Operation operation = operationItem.getOperation();
+        for (CreationLabel label : CreationLabel.values()) {
+            JTextField textField = textFields.get(label);
+            switch (label) {
+                case NAME: {
+                    textField.setText(operation.getName());
+                    break;
+                }
+                case JOINT1: {
+                    if (operation.getJoint1() != 0) textField.setText(String.valueOf(operation.getJoint1()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+                case JOINT2: {
+                    if (operation.getJoint2() != 0) textField.setText(String.valueOf(operation.getJoint2()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+                case Z: {
+                    if (operation.getZ() != 0) textField.setText(String.valueOf(operation.getZ()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+                case GRIPPER: {
+                    if (operation.getGripper() != 0) textField.setText(String.valueOf(operation.getGripper()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+                case SPEED: {
+                    if (operation.getSpeed() != 0) textField.setText(String.valueOf(operation.getSpeed()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+            }
+        }
+        operationsHandler.addOperationItem(operationItem.getOperation().getName(), operationItem);
+        selectedOperation = operationItem;
+    }
+
+    public void saveOperation() {
+        if (operationsHandler == null) return;
+        Operation operation = new Operation(
+                textFields.get(CreationLabel.NAME).getText(),
+                Integer.parseInt(textFields.get(CreationLabel.JOINT1).getText()),
+                Integer.parseInt(textFields.get(CreationLabel.JOINT2).getText()),
+                Integer.parseInt(textFields.get(CreationLabel.Z).getText()),
+                Integer.parseInt(textFields.get(CreationLabel.GRIPPER).getText()),
+                Integer.parseInt(textFields.get(CreationLabel.SPEED).getText())
+        );
+        operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
+        selectedOperation.setOperation(operation);
+        operationsHandler.addOperationItem(operation.getName(), selectedOperation);
+    }
+
     public void addOperation(String name) {
-        OperationItem operation = new OperationItem(name, this);
+        if (operationsHandler == null) return;
+        OperationItem operation = new OperationItem(name,new Operation(name, 0,0, 0, 0, 0), this);
+        operationsHandler.addOperationItem(name, operation);
         operations.add(operation);
-        operation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0,0));
+        operation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         operation.setMaximumSize(new Dimension(230, 58));
         operationsPanel.add(operation);
         operationsPanel.add(Box.createVerticalStrut(5));
@@ -228,6 +297,7 @@ public class AppCreationGUI extends JFrame {
 
     public void deleteOperation(OperationItem item) {
         if (operations.size() == 1) return;
+        operationsHandler.removeOperationItem(item.getOperation().getName());
         operations.remove(item);
         operationsPanel.remove(item);
         updateOperationStates();
