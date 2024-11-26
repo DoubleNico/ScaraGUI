@@ -13,12 +13,10 @@ public class CreationOperation extends JPanel {
     private OperationItem selectedOperation;
     private boolean hasSaved = false;
     private final AppCreationGUI parent;
-    private final CreationForm formPanel;
     private final OperationsHandler operationsHandler;
     private final ArrayList<OperationItem> operations;
 
-    public CreationOperation(AppCreationGUI parent, CreationForm formPanel, OperationsHandler operationsHandler) {
-        this.formPanel = formPanel;
+    public CreationOperation(AppCreationGUI parent, OperationsHandler operationsHandler) {
         this.parent = parent;
         this.operationsHandler = operationsHandler;
         operations = new ArrayList<>();
@@ -29,7 +27,7 @@ public class CreationOperation extends JPanel {
     public void loadOperation(OperationItem operationItem) {
         Operation operation = operationItem.getOperation();
         for (CreationLabel label : CreationLabel.values()) {
-            JTextField textField = formPanel.getTextFields().get(label);
+            JTextField textField = parent.getFormPanel().getTextFields().get(label);
             switch (label) {
                 case NAME: {
                     textField.setText(operation.getName());
@@ -70,14 +68,14 @@ public class CreationOperation extends JPanel {
     public void saveOperation() {
         if (operationsHandler == null) return;
         if (selectedOperation == null) return;
-        if (!formPanel.validateForm()) return;
+        if (!parent.getFormPanel().validateForm()) return;
         Operation operation = new Operation(
-            formPanel.getTextFields().get(CreationLabel.NAME).getText(),
-            Integer.parseInt(formPanel.getTextFields().get(CreationLabel.JOINT1).getText()),
-            Integer.parseInt(formPanel.getTextFields().get(CreationLabel.JOINT2).getText()),
-            Integer.parseInt(formPanel.getTextFields().get(CreationLabel.Z).getText()),
-            Integer.parseInt(formPanel.getTextFields().get(CreationLabel.GRIPPER).getText()),
-            Integer.parseInt(formPanel.getTextFields().get(CreationLabel.SPEED).getText())
+            parent.getFormPanel().getTextFields().get(CreationLabel.NAME).getText(),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT1).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT2).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.Z).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.GRIPPER).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText())
         );
         operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
         if (!selectedOperation.getOperation().getName().equals(operation.getName())) {
