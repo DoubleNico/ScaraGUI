@@ -3,7 +3,6 @@ package me.doublenico.scaraGUI.gui.creation;
 import com.formdev.flatlaf.extras.FlatDesktop;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandler;
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
@@ -11,12 +10,11 @@ import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AppCreationGUI extends JFrame {
 
     private final CreationOperation operationsPanel;
+    private final CreationForm formPanel;
 
     public AppCreationGUI(String name) {
         super("Editing " + name);
@@ -31,7 +29,7 @@ public class AppCreationGUI extends JFrame {
         setLocationRelativeTo(null);
 
         OperationsHandler operationsHandler = new OperationsHandler();
-        CreationForm formPanel = new CreationForm(this);
+        formPanel = new CreationForm(this);
         operationsPanel = new CreationOperation(this, formPanel, operationsHandler);
 
         JPanel contentPane = new JPanel(new BorderLayout());
@@ -77,6 +75,7 @@ public class AppCreationGUI extends JFrame {
         contentPane.add(rightPanel, BorderLayout.CENTER);
 
         operationsPanel.addOperation("Default");
+        operationsPanel.loadOperation(operationsPanel.getOperations().get(0));
         setContentPane(contentPane);
         setVisible(true);
 
@@ -106,5 +105,9 @@ public class AppCreationGUI extends JFrame {
 
     public CreationOperation getOperationsPanel() {
         return operationsPanel;
+    }
+
+    public CreationForm getFormPanel() {
+        return formPanel;
     }
 }
