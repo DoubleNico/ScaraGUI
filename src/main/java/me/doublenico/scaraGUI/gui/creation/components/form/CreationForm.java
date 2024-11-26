@@ -48,6 +48,47 @@ public class CreationForm extends JPanel {
         }
     }
 
+    public boolean validateForm() {
+        for (CreationLabel label : textFields.keySet()) {
+            if (textFields.get(label).getText().isEmpty()) {
+                createEmptyDialog(label.name);
+                return false;
+            }
+            if (label == CreationLabel.NAME) continue;
+            if (isInteger(textFields.get(label).getText())) {
+                if (Integer.parseInt(textFields.get(label).getText()) < 0) {
+                    createNegativeDialog(label.name);
+                    return false;
+                }
+            } else {
+                createWarningDialog(label.name);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public void createWarningDialog(String field) {
+        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it contains a bad input. Check if the values are all numbers!", "Bad Input!", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void createEmptyDialog(String field) {
+        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it empty!", "Empty Input!", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void createNegativeDialog(String field) {
+        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it contains a negative value!", "Negative Input!", JOptionPane.WARNING_MESSAGE);
+    }
+
     private JLabel createStyledLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Inter", Font.BOLD, 16));
