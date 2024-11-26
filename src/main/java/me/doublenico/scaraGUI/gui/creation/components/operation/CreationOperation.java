@@ -70,6 +70,7 @@ public class CreationOperation extends JPanel {
     public void saveOperation() {
         if (operationsHandler == null) return;
         if (selectedOperation == null) return;
+        if (!formPanel.validateForm()) return;
         Operation operation = new Operation(
             formPanel.getTextFields().get(CreationLabel.NAME).getText(),
             Integer.parseInt(formPanel.getTextFields().get(CreationLabel.JOINT1).getText()),
