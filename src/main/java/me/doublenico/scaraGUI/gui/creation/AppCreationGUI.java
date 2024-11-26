@@ -30,7 +30,7 @@ public class AppCreationGUI extends JFrame {
 
         OperationsHandler operationsHandler = new OperationsHandler();
         formPanel = new CreationForm(this);
-        operationsPanel = new CreationOperation(this, formPanel, operationsHandler);
+        operationsPanel = new CreationOperation(this, operationsHandler);
 
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.setBackground(new Color(22, 22, 23));
@@ -45,9 +45,9 @@ public class AppCreationGUI extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         buttonPanel.setBackground(new Color(22, 22, 23));
 
+        JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
         JButton deleteButton = createStyledButton("Delete", new Color(204, 0, 0));
         JButton saveButton = createStyledButton("Save", new Color(0, 122, 204));
-        JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
         openSidebarButton.setVisible(false);
         sideBar.getCloseButton().addActionListener(e -> {
             sideBar.setVisible(false);

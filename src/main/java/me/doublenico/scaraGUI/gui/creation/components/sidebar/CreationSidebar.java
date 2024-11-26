@@ -43,8 +43,8 @@ public class CreationSidebar extends JPanel {
 
         headerPanel.add(scaraName);
         headerPanel.add(Box.createHorizontalGlue());
-        headerPanel.add(closeButton);
         headerPanel.add(goBackButton);
+        headerPanel.add(closeButton);
 
         add(headerPanel);
 
