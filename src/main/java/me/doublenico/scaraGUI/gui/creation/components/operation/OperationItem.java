@@ -23,8 +23,10 @@ public class OperationItem extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
-                parent.getOperationsPanel().loadOperation(OperationItem.this);
+                if (parent.getFormPanel().validateForm()) {
+                    if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
+                    parent.getOperationsPanel().loadOperation(OperationItem.this);
+                }
             }
         });
 
@@ -86,8 +88,10 @@ public class OperationItem extends JPanel {
         appLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
-                parent.getOperationsPanel().loadOperation(OperationItem.this);
+                if (parent.getFormPanel().validateForm()) {
+                    if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
+                    parent.getOperationsPanel().loadOperation(OperationItem.this);
+                }
             }
         });
 
