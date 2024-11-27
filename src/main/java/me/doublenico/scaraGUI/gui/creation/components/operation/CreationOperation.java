@@ -1,11 +1,16 @@
 package me.doublenico.scaraGUI.gui.creation.components.operation;
 
+import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
+import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.configuration.application.OperationModel;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationLabel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CreationOperation extends JPanel {
 
@@ -13,7 +18,7 @@ public class CreationOperation extends JPanel {
     private boolean hasSaved = false;
     private final AppCreationGUI parent;
     private final OperationsHandler operationsHandler;
-    private final ArrayList<OperationItem> operations;
+    private final List<OperationItem> operations;
 
     public CreationOperation(AppCreationGUI parent, OperationsHandler operationsHandler) {
         this.parent = parent;
@@ -90,6 +95,22 @@ public class CreationOperation extends JPanel {
         selectedOperation.setOperation(operation);
         operationsHandler.addOperationItem(operation.getName(), selectedOperation);
         hasSaved = true;
+        OperationModel operationModel = new OperationModel(
+            operations.indexOf(selectedOperation),
+            operation.getJoint1(),
+            operation.getJoint2(),
+            operation.getZ(),
+            operation.getGripper(),
+            operation.getSpeed()
+        );
+        ApplicationConfiguration configuration = parent.getConfiguration();
+        ApplicationModel applicationModel = configuration.loadCurrentApplication();
+        if (applicationModel != null) {
+            if (applicationModel.getOperations() == null) applicationModel.setOperations(new HashMap<>());
+
+            applicationModel.getOperations().put(operation.getName(), operationModel);
+            configuration.saveConfiguration(applicationModel);
+        } else System.err.println("Application model could not be loaded.");
     }
 
     public void addOperation(String name) {
@@ -153,7 +174,7 @@ public class CreationOperation extends JPanel {
         repaint();
     }
 
-    public ArrayList<OperationItem> getOperations() {
+    public List<OperationItem> getOperations() {
         return operations;
     }
 
