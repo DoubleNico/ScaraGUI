@@ -1,16 +1,22 @@
 package me.doublenico.scaraGUI.gui.main;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
+import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class ScaraGUI extends JFrame {
-
-    private JButton loadAppButton;
-    private JButton createNewAppButton;
 
     private JPanel appItemsPanel;
 
@@ -38,7 +44,7 @@ public class ScaraGUI extends JFrame {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
 
-        loadAppButton = new JButton("Load App");
+        JButton loadAppButton = new JButton("Load App");
         loadAppButton.setBackground(new Color(9, 125, 201));
         loadAppButton.setForeground(Color.WHITE);
         loadAppButton.setFont(new Font("Inter", Font.BOLD, 12));
@@ -47,6 +53,41 @@ public class ScaraGUI extends JFrame {
         loadAppButton.setPreferredSize(new Dimension(105, 33));
         loadAppButton.setMinimumSize(new Dimension(105, 33));
         loadAppButton.setMaximumSize(new Dimension(105, 33));
+
+        loadAppButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            String userDir = System.getProperty("user.dir");
+            if (userDir != null) fileChooser.setCurrentDirectory(new File(userDir));
+            fileChooser.setFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".yml");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "YAML Files (*.yml)";
+                }
+            });
+
+            int returnValue = fileChooser.showOpenDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                try {
+                    ApplicationModel application = mapper.readValue(selectedFile, ApplicationModel.class);
+                    if (application != null && application.getName() != null) {
+                        ApplicationConfiguration configuration = new ApplicationConfiguration(selectedFile.getParentFile(), selectedFile.getName());
+                        new AppCreationGUI(configuration).setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Invalid application file.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Failed to load application: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         JButton settingsButton = new JButton("Settings");
         settingsButton.setBackground(new Color(37, 41, 45));
@@ -70,7 +111,7 @@ public class ScaraGUI extends JFrame {
         centerPanel.setPreferredSize(new Dimension(468, 400));
         centerPanel.setOpaque(false);
 
-        createNewAppButton = new JButton("Create new SCARA App");
+        JButton createNewAppButton = new JButton("Create new SCARA App");
         createNewAppButton.setBackground(new Color(42, 255, 13));
         createNewAppButton.setForeground(Color.BLACK);
         createNewAppButton.setFont(new Font("Inter", Font.BOLD, 16));
@@ -87,7 +128,6 @@ public class ScaraGUI extends JFrame {
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setOpaque(false);
         bottomPanel.setPreferredSize(new Dimension(498, 254));
-
 
         appItemsPanel = new JPanel();
         appItemsPanel.setLayout(new BoxLayout(appItemsPanel, BoxLayout.Y_AXIS));
@@ -110,6 +150,33 @@ public class ScaraGUI extends JFrame {
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(contentPane);
+        loadApplications();
         setVisible(true);
+    }
+
+    private void loadApplications() {
+        String userDir = System.getProperty("user.dir");
+        if (userDir == null) return;
+        File directory = new File(userDir);
+        File[] files = directory.listFiles((dir, name) -> name.endsWith(".yml"));
+
+        if (files != null) {
+            Arrays.stream(files).forEach(this::loadApplication);
+        }
+    }
+
+    private void loadApplication(File file) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try {
+            ApplicationModel application = mapper.readValue(file, ApplicationModel.class);
+            if (application != null && application.getName() != null) {
+                AppItem appItem = new AppItem(application.getName(), file, appItemsPanel);
+                appItem.setMaximumSize(new Dimension(468, 60));
+                appItemsPanel.add(appItem);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to load application from file: " + file.getName());
+            e.printStackTrace();
+        }
     }
 }
