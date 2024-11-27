@@ -7,6 +7,7 @@ import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandle
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
+import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,9 +47,13 @@ public class AppCreationGUI extends JFrame {
         buttonPanel.setBackground(new Color(22, 22, 23));
 
         JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
+        JButton settingsButton = createStyledButton("Settings", new Color(37, 41, 45));
         JButton deleteButton = createStyledButton("Delete", new Color(204, 0, 0));
         JButton saveButton = createStyledButton("Save", new Color(0, 122, 204));
         openSidebarButton.setVisible(false);
+
+        settingsButton.addActionListener(e -> new SettingsGui().setVisible(true));
+
         sideBar.getCloseButton().addActionListener(e -> {
             sideBar.setVisible(false);
             openSidebarButton.setVisible(true);
@@ -65,6 +70,7 @@ public class AppCreationGUI extends JFrame {
 
         saveButton.addActionListener(e -> operationsPanel.saveOperation());
 
+        buttonPanel.add(settingsButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(saveButton);
         buttonPanel.add(openSidebarButton);
