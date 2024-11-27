@@ -10,12 +10,14 @@ import java.awt.event.MouseEvent;
 public class OperationItem extends JPanel {
 
     private Operation operation;
+    private final AppCreationGUI parent;
     private final JButton deleteButton;
     private final JButton moveUpButton;
     private final JButton moveDownButton;
 
     public OperationItem(String appName, Operation operation, AppCreationGUI parent) {
         this.operation = operation;
+        this.parent = parent;
         setLayout(new GridBagLayout());
         setOpaque(false);
         setPreferredSize(new Dimension(200, 60));
@@ -24,6 +26,8 @@ public class OperationItem extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (parent.getFormPanel().validateForm()) {
+                    if (!checkSavedConfirm()) return;
+                    parent.getOperationsPanel().saveOperation();
                     if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
                     parent.getOperationsPanel().loadOperation(OperationItem.this);
                 }
@@ -89,6 +93,8 @@ public class OperationItem extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (parent.getFormPanel().validateForm()) {
+                    if (!checkSavedConfirm()) return;
+                    parent.getOperationsPanel().saveOperation();
                     if (parent.getOperationsPanel().getSelectedOperation() != null) parent.getOperationsPanel().getSelectedOperation().setBorder(BorderFactory.createEmptyBorder());
                     parent.getOperationsPanel().loadOperation(OperationItem.this);
                 }
@@ -120,6 +126,14 @@ public class OperationItem extends JPanel {
         button.setPreferredSize(new Dimension(25, 20));
         button.setToolTipText(toolTip);
         return button;
+    }
+
+    private boolean checkSavedConfirm(){
+        if (!parent.getOperationsPanel().hasSaved()) {
+            int option = JOptionPane.showConfirmDialog(parent, "You have not saved your progress, accept if you wanna save it. Are you sure you want to switch operations?", "Save Changes", JOptionPane.YES_NO_OPTION);
+            return option == JOptionPane.YES_OPTION;
+        }
+        return true;
     }
 
     public Operation getOperation() {
