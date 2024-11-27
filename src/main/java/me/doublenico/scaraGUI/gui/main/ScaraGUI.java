@@ -2,7 +2,6 @@ package me.doublenico.scaraGUI.gui.main;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
@@ -48,7 +47,6 @@ public class ScaraGUI extends JFrame {
         loadAppButton.setPreferredSize(new Dimension(105, 33));
         loadAppButton.setMinimumSize(new Dimension(105, 33));
         loadAppButton.setMaximumSize(new Dimension(105, 33));
-        loadAppButton.addActionListener(e -> new AppCreationGUI("ScaraGUI").setVisible(true));
 
         JButton settingsButton = new JButton("Settings");
         settingsButton.setBackground(new Color(37, 41, 45));
