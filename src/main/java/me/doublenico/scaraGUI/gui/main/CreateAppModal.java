@@ -105,12 +105,6 @@ public class CreateAppModal extends JDialog {
                         ApplicationConfiguration configuration = new ApplicationConfiguration(directory, new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");
                         configuration.loadConfiguration();
 
-                        AppItem appItem = new AppItem(name);
-                        appItem.setMaximumSize(new Dimension(468, 60));
-                        panel.add(appItem);
-                        panel.revalidate();
-                        panel.repaint();
-
                         dispose();
                         new AppCreationGUI(configuration).setVisible(true);
                     } catch (Exception ex) {
