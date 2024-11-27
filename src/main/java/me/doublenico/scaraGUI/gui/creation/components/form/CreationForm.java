@@ -4,7 +4,7 @@ import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 
 public class CreationForm extends JPanel {
 
@@ -49,22 +49,28 @@ public class CreationForm extends JPanel {
     }
 
     public boolean validateForm() {
+        Map<Integer, String> invalidFields = new TreeMap<>();
+
         for (CreationLabel label : textFields.keySet()) {
-            if (textFields.get(label).getText().isEmpty()) {
-                createEmptyDialog(label.name);
-                return false;
-            }
-            if (label == CreationLabel.NAME) continue;
-            if (isInteger(textFields.get(label).getText())) {
-                if (Integer.parseInt(textFields.get(label).getText()) < 0) {
-                    createNegativeDialog(label.name);
-                    return false;
+            String text = textFields.get(label).getText();
+            if (text.isEmpty()) {
+                invalidFields.put(label.position, emptyFieldMessage(label.name));
+            } else if (label != CreationLabel.NAME) {
+                if (isInteger(text)) {
+                    if (Integer.parseInt(text) < 0) {
+                        invalidFields.put(label.position, negativeFieldMessage(label.name));
+                    }
+                } else {
+                    invalidFields.put(label.position, badInputMessage(label.name));
                 }
-            } else {
-                createWarningDialog(label.name);
-                return false;
             }
         }
+
+        if (!invalidFields.isEmpty()) {
+            JOptionPane.showMessageDialog(this, String.join("\n", invalidFields.values()), "Invalid Inputs", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         return true;
     }
 
@@ -77,16 +83,16 @@ public class CreationForm extends JPanel {
         }
     }
 
-    public void createWarningDialog(String field) {
-        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it contains a bad input. Check if the values are all numbers!", "Bad Input!", JOptionPane.WARNING_MESSAGE);
+    public String emptyFieldMessage(String field) {
+        return field + " is empty";
     }
 
-    public void createEmptyDialog(String field) {
-        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it empty!", "Empty Input!", JOptionPane.WARNING_MESSAGE);
+    public String negativeFieldMessage(String field) {
+        return field + " contains a negative value";
     }
 
-    public void createNegativeDialog(String field) {
-        JOptionPane.showMessageDialog(this, "Please check '" + field + "' because it contains a negative value!", "Negative Input!", JOptionPane.WARNING_MESSAGE);
+    public String badInputMessage(String field) {
+        return field + " contains a bad input (not a number)";
     }
 
     private JLabel createStyledLabel(String text) {
