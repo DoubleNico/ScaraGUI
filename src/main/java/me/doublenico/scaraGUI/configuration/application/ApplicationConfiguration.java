@@ -32,8 +32,8 @@ public class ApplicationConfiguration {
         if (!configFile.exists()) {
             try {
                 ApplicationModel application = new ApplicationModel();
-                application.setName(new ExtensionUtils(fileName).getFileNameWithoutExtension()); // Use the file name as the application name
-                application.setOperations(null); // No operations yet
+                application.setName(new ExtensionUtils(fileName).getFileNameWithoutExtension());
+                application.setOperations(null);
 
                 mapper.writeValue(configFile, application);
                 System.out.println("Blank configuration created: " + configFile.getAbsolutePath());
