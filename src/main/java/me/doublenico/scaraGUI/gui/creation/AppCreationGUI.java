@@ -3,6 +3,7 @@ package me.doublenico.scaraGUI.gui.creation;
 import com.formdev.flatlaf.extras.FlatDesktop;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandler;
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
@@ -16,9 +17,11 @@ public class AppCreationGUI extends JFrame {
 
     private final CreationOperation operationsPanel;
     private final CreationForm formPanel;
+    private final ApplicationConfiguration configuration;
 
-    public AppCreationGUI(String name) {
-        super("Editing " + name);
+    public AppCreationGUI(ApplicationConfiguration configuration) {
+        super("Editing " + configuration.getFileName());
+        this.configuration = configuration;
         FlatMacDarkLaf.setup();
 
         if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
@@ -107,6 +110,10 @@ public class AppCreationGUI extends JFrame {
         button.setPreferredSize(new Dimension(80, 30));
         button.setBorder(BorderFactory.createEmptyBorder());
         return button;
+    }
+
+    public ApplicationConfiguration getConfiguration() {
+        return configuration;
     }
 
     public CreationOperation getOperationsPanel() {
