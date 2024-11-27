@@ -3,6 +3,7 @@ package me.doublenico.scaraGUI.gui.main;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class ScaraGUI extends JFrame {
     public ScaraGUI() {
         super("ScaraGUI");
         FlatMacDarkLaf.setup();
-        if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+        if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,8 +50,20 @@ public class ScaraGUI extends JFrame {
         loadAppButton.setMaximumSize(new Dimension(105, 33));
         loadAppButton.addActionListener(e -> new AppCreationGUI("ScaraGUI").setVisible(true));
 
+        JButton settingsButton = new JButton("Settings");
+        settingsButton.setBackground(new Color(37, 41, 45));
+        settingsButton.setForeground(Color.WHITE);
+        settingsButton.setFont(new Font("Inter", Font.BOLD, 12));
+        settingsButton.setFocusPainted(false);
+        settingsButton.setOpaque(true);
+        settingsButton.setPreferredSize(new Dimension(105, 33));
+        settingsButton.setMinimumSize(new Dimension(105, 33));
+        settingsButton.setMaximumSize(new Dimension(105, 33));
+        settingsButton.addActionListener(e -> new SettingsGui().setVisible(true));
+
         topPanel.add(titleLabel);
         topPanel.add(Box.createHorizontalGlue());
+        topPanel.add(settingsButton);
         topPanel.add(loadAppButton);
         topPanel.add(Box.createRigidArea(new Dimension(15, 0)));
 
