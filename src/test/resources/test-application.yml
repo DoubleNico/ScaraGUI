@@ -1,0 +1,16 @@
+name: "ScaraGui" # Name of the Application, used for the title of the window
+operations: # List of operations
+  Default: # Name of the operation
+    position: 0 # Position of the operation
+    joint1: 100 # Joint 1 value
+    joint2: 100 # Joint 2 value
+    z: 100 # Z value
+    gripper: 100 # Gripper value
+    speed: 100 # Speed value
+  Operation 1:
+    position: 1
+    joint1: 101
+    joint2: 101
+    z: 101
+    gripper: 101
+    speed: 101

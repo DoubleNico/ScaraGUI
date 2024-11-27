@@ -28,4 +28,14 @@ public class ApplicationModel {
     public void setOperations(Map<String, OperationModel> operations) {
         this.operations = operations;
     }
+
+
+    public void validate() {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Application name is missing");
+        }
+        if (operations == null || operations.isEmpty()) {
+            throw new IllegalArgumentException("Operations are missing");
+        }
+    }
 }

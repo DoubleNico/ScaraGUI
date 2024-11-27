@@ -1,0 +1,10 @@
+name: "ScaraGui" # Name of the Application, used for the title of the window
+operati3324525ons: # List of operations
+  Default: # Name of the operation
+    position: "csgs" # Position of the operation
+    joint1: "gsgsh" # Joint 1 value
+    joint2: "Hsh" # Joint 2 value
+    z: 100 # Z value
+    gripper: 100 # Gripper value
+    speed: 100 # Speed value
+

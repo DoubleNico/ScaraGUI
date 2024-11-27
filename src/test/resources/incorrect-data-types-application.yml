@@ -1,0 +1,9 @@
+name: 12345 # Incorrect data type for name
+operations: # List of operations
+  Default: # Name of the operation
+    position: "zero" # Incorrect data type for position
+    joint1: "one hundred" # Incorrect data type for joint1
+    joint2: "one hundred" # Incorrect data type for joint2
+    z: "one hundred" # Incorrect data type for z
+    gripper: "one hundred" # Incorrect data type for gripper
+    speed: "one hundred" # Incorrect data type for speed
