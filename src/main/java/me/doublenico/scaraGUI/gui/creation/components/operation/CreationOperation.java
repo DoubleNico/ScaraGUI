@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CreationOperation extends JPanel {
 
@@ -67,6 +68,7 @@ public class CreationOperation extends JPanel {
         operationsHandler.addOperationItem(operationItem.getOperation().getName(), operationItem);
         selectedOperation = operationItem;
         selectedOperation.setBorder(BorderFactory.createLineBorder(new Color(0, 122, 204), 2));
+        hasSaved = true;
     }
 
     public void saveOperation() {
@@ -146,14 +148,29 @@ public class CreationOperation extends JPanel {
     }
 
     public void deleteOperation(OperationItem item) {
-        if (operations.size() == 1) return;
         operationsHandler.removeOperationItem(item.getOperation().getName());
         operations.remove(item);
         remove(item);
+
+        ApplicationConfiguration configuration = parent.getConfiguration();
+        ApplicationModel applicationModel = configuration.loadCurrentApplication();
+
+        if (applicationModel != null) {
+            Map<String, OperationModel> operationsMap = applicationModel.getOperations();
+            if (operationsMap != null) {
+                operationsMap.remove(item.getOperation().getName());
+            }
+
+            configuration.saveConfiguration(applicationModel);
+        } else {
+            System.err.println("Application model could not be loaded.");
+        }
+
         updateOperationStates();
         revalidate();
         repaint();
     }
+
 
     private void updateOperationStates() {
         for (int i = 0; i < operations.size(); i++) {
