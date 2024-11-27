@@ -8,10 +8,8 @@ import me.doublenico.scaraGUI.gui.creation.components.form.CreationLabel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class CreationOperation extends JPanel {
 
@@ -76,6 +74,7 @@ public class CreationOperation extends JPanel {
         if (selectedOperation == null) return;
         if (!parent.getFormPanel().validateForm()) return;
         Operation operation = new Operation(
+            selectedOperation.getOperation().getUuid(),
             parent.getFormPanel().getTextFields().get(CreationLabel.NAME).getText(),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT1).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT2).getText()),
@@ -99,6 +98,7 @@ public class CreationOperation extends JPanel {
         hasSaved = true;
         OperationModel operationModel = new OperationModel(
             operations.indexOf(selectedOperation),
+            operation.getName(),
             operation.getJoint1(),
             operation.getJoint2(),
             operation.getZ(),
@@ -110,19 +110,27 @@ public class CreationOperation extends JPanel {
         if (applicationModel != null) {
             if (applicationModel.getOperations() == null) applicationModel.setOperations(new HashMap<>());
 
-            applicationModel.getOperations().put(operation.getName(), operationModel);
+            applicationModel.getOperations().put(operation.getUuid().toString(), operationModel);
             configuration.saveConfiguration(applicationModel);
         } else System.err.println("Application model could not be loaded.");
     }
 
     public void addOperation(String name) {
         if (operationsHandler == null) return;
-        OperationItem operation = new OperationItem(name,new Operation(name, 0,0, 0, 0, 0), parent);
+        OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, 0,0, 0, 0, 0), parent);
         operationsHandler.addOperationItem(name, operation);
-        operations.add(operation);
-        operation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        operation.setMaximumSize(new Dimension(230, 58));
-        add(operation);
+        addOperationItem(operation);
+    }
+
+    public void addOperation(OperationItem operationItem) {
+        addOperationItem(operationItem);
+    }
+
+    private void addOperationItem(OperationItem operationItem) {
+        operations.add(operationItem);
+        operationItem.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        operationItem.setMaximumSize(new Dimension(230, 58));
+        add(operationItem);
         add(Box.createVerticalStrut(5));
         updateOperationStates();
         revalidate();
@@ -135,6 +143,7 @@ public class CreationOperation extends JPanel {
             operations.remove(index);
             operations.add(index - 1, item);
             updateOperationsPanel();
+            updateOperationPositions();
         }
     }
 
@@ -144,9 +153,9 @@ public class CreationOperation extends JPanel {
             operations.remove(index);
             operations.add(index + 1, item);
             updateOperationsPanel();
+            updateOperationPositions();
         }
     }
-
     public void deleteOperation(OperationItem item) {
         operationsHandler.removeOperationItem(item.getOperation().getName());
         operations.remove(item);
@@ -158,7 +167,7 @@ public class CreationOperation extends JPanel {
         if (applicationModel != null) {
             Map<String, OperationModel> operationsMap = applicationModel.getOperations();
             if (operationsMap != null) {
-                operationsMap.remove(item.getOperation().getName());
+                operationsMap.remove(item.getOperation().getUuid().toString());
             }
 
             configuration.saveConfiguration(applicationModel);
@@ -190,6 +199,25 @@ public class CreationOperation extends JPanel {
         revalidate();
         repaint();
     }
+
+    private void updateOperationPositions() {
+        ApplicationConfiguration configuration = parent.getConfiguration();
+        ApplicationModel applicationModel = configuration.loadCurrentApplication();
+        if (applicationModel != null) {
+            Map<String, OperationModel> operationsMap = applicationModel.getOperations();
+            if (operationsMap != null) {
+                for (int i = 0; i < operations.size(); i++) {
+                    OperationItem item = operations.get(i);
+                    OperationModel operationModel = operationsMap.get(item.getOperation().getUuid().toString());
+                    if (operationModel != null) {
+                        operationModel.setPosition(i);
+                    }
+                }
+                configuration.saveConfiguration(applicationModel);
+            }
+        }
+    }
+
 
     public List<OperationItem> getOperations() {
         return operations;

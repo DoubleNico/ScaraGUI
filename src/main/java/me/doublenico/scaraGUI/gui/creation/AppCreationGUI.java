@@ -4,6 +4,10 @@ import com.formdev.flatlaf.extras.FlatDesktop;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
+import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.configuration.application.OperationModel;
+import me.doublenico.scaraGUI.gui.creation.components.operation.Operation;
+import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandler;
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
@@ -12,6 +16,10 @@ import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 public class AppCreationGUI extends JFrame {
 
@@ -82,8 +90,27 @@ public class AppCreationGUI extends JFrame {
         rightPanel.add(formPanel, BorderLayout.CENTER);
 
         contentPane.add(rightPanel, BorderLayout.CENTER);
+        ApplicationModel applicationModel = configuration.loadCurrentApplication();
+        if (applicationModel != null && applicationModel.getOperations() != null && !applicationModel.getOperations().isEmpty()) {
+            Map<String, OperationModel> sortedOperations = new TreeMap<>(Comparator.comparingInt(o -> applicationModel.getOperations().get(o).getPosition()));
+            sortedOperations.putAll(applicationModel.getOperations());
 
-        operationsPanel.addOperation("Default");
+            for (Map.Entry<String, OperationModel> entry : sortedOperations.entrySet()) {
+                Operation operation = new Operation(
+                    UUID.fromString(entry.getKey()),
+                    entry.getValue().getName(),
+                    entry.getValue().getJoint1(),
+                    entry.getValue().getJoint2(),
+                    entry.getValue().getZ(),
+                    entry.getValue().getGripper(),
+                    entry.getValue().getSpeed()
+                );
+                OperationItem operationItem = new OperationItem(entry.getValue().getName(), operation, this);
+                operationsPanel.addOperation(operationItem);
+            }
+        } else {
+            operationsPanel.addOperation("Default");
+        }
         operationsPanel.loadOperation(operationsPanel.getOperations().get(0));
         setContentPane(contentPane);
         setVisible(true);
