@@ -1,6 +1,8 @@
 package me.doublenico.scaraGUI.gui.main;
 
+import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.utils.ExtensionUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,18 +88,35 @@ public class CreateAppModal extends JDialog {
         saveButton.addActionListener(e -> {
             String name = nameField.getText();
             String location = locationField.getText();
-            if (name == null || name.isEmpty() || location == null || location.isEmpty())
+            if (name == null || name.isEmpty() || location == null || location.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Name and location cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
-            else {
-                File file = new File(location, name);
-                if (file.exists())
+            } else {
+
+                File file = new File(location + File.separator + new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");
+                if (file.exists()) {
                     JOptionPane.showMessageDialog(this, "A file with the same name already exists at the specified location.", "Error", JOptionPane.ERROR_MESSAGE);
-                else {
-                    dispose();
-                    AppItem appItem = new AppItem(name);
-                    appItem.setMaximumSize(new Dimension(468, 60));
-                    getOwner().setVisible(false);
-                    new AppCreationGUI(name).setVisible(true);
+                } else {
+                    try {
+                        File directory = new File(location);
+                        if (!directory.exists()) {
+                            directory.mkdirs();
+                        }
+
+                        ApplicationConfiguration configuration = new ApplicationConfiguration(directory, new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");
+                        configuration.loadConfiguration();
+
+                        AppItem appItem = new AppItem(name);
+                        appItem.setMaximumSize(new Dimension(468, 60));
+                        panel.add(appItem);
+                        panel.revalidate();
+                        panel.repaint();
+
+                        dispose();
+                        new AppCreationGUI(configuration).setVisible(true);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, "Failed to save the file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
