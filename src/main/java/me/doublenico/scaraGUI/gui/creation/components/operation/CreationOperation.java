@@ -1,7 +1,6 @@
 package me.doublenico.scaraGUI.gui.creation.components.operation;
 
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
-import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationLabel;
 
 import javax.swing.*;
