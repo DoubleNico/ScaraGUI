@@ -6,6 +6,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.configuration.locations.LocationsConfiguration;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
@@ -15,10 +16,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class ScaraGUI extends JFrame {
 
     private JPanel appItemsPanel;
+    private final LocationsConfiguration locationsConfiguration;
 
     public ScaraGUI() {
         super("ScaraGUI");
@@ -29,6 +32,22 @@ public class ScaraGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 600);
         setLocationRelativeTo(null);
+
+        if (System.getProperty("user.dir") == null) {
+            JFileChooser directoryChooser = new JFileChooser();
+            directoryChooser.setDialogTitle("Select the directory to save your applications");
+            directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnValue = directoryChooser.showOpenDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedDirectory = directoryChooser.getCurrentDirectory();
+                System.setProperty("user.dir", selectedDirectory.getAbsolutePath());
+            } else {
+                JOptionPane.showMessageDialog(this, "No directory selected. Exiting application.", "Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
+        }
+
+        locationsConfiguration = new LocationsConfiguration(new File(System.getProperty("user.dir") + File.separator + "config"));
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(10, 10));
@@ -74,6 +93,8 @@ public class ScaraGUI extends JFrame {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                System.out.println("Loaded application: " + selectedFile.getAbsolutePath());
+                locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
                 try {
                     ApplicationModel application = mapper.readValue(selectedFile, ApplicationModel.class);
                     if (application != null && application.getName() != null) {
@@ -160,9 +181,12 @@ public class ScaraGUI extends JFrame {
         File directory = new File(userDir);
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".yml"));
 
-        if (files != null) {
-            Arrays.stream(files).forEach(this::loadApplication);
-        }
+        if (files != null) Arrays.stream(files).forEach(this::loadApplication);
+
+        List<File> locationsFiles = locationsConfiguration.getValidApplications();
+        if (locationsFiles == null) return;
+        if (locationsFiles.isEmpty()) return;
+        locationsFiles.forEach(this::loadApplication);
     }
 
     private void loadApplication(File file) {
@@ -176,7 +200,10 @@ public class ScaraGUI extends JFrame {
             }
         } catch (IOException e) {
             System.err.println("Failed to load application from file: " + file.getName());
-            e.printStackTrace();
         }
+    }
+
+    public LocationsConfiguration getLocationsConfiguration() {
+        return locationsConfiguration;
     }
 }
