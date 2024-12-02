@@ -3,6 +3,7 @@ package me.doublenico.scaraGUI.gui.main;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.utils.ExtensionUtils;
+import me.doublenico.scaraGUI.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,7 +108,7 @@ public class CreateAppModal extends JDialog {
                                 return;
                             }
                         }
-                        if (!directory.getAbsolutePath().contains(System.getProperty("user.dir")))
+                        if (new FileUtils().handleSelectedFile(file))
                             owner.getLocationsConfiguration().addApplication(file.getAbsolutePath());
 
                         ApplicationConfiguration configuration = new ApplicationConfiguration(directory, new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");

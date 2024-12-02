@@ -9,6 +9,7 @@ import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.locations.LocationsConfiguration;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
+import me.doublenico.scaraGUI.utils.FileUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -105,7 +106,8 @@ public class ScaraGUI extends JFrame {
                     return;
                 }
 
-                if (!selectedFile.getAbsolutePath().contains(System.getProperty("user.dir"))) locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
+                if (new FileUtils().handleSelectedFile(selectedFile))
+                    locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
 
                 try {
                     ApplicationModel application = mapper.readValue(selectedFile, ApplicationModel.class);
