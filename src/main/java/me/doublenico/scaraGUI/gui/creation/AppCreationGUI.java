@@ -35,7 +35,7 @@ public class AppCreationGUI extends JFrame {
         if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
         getRootPane().putClientProperty("apple.awt.fullscreenable", true);
 
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(954, 600);
         setLocationRelativeTo(null);
