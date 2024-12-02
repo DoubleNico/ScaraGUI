@@ -65,6 +65,7 @@ public class CreateAppModal extends JDialog {
 
         chooseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Choose a location to save the application");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (locationField.getText() != null && !locationField.getText().isEmpty()) fileChooser.setCurrentDirectory(new File(locationField.getText()));
             int returnValue = fileChooser.showOpenDialog(this);
