@@ -11,10 +11,12 @@ import java.io.File;
 public class CreateAppModal extends JDialog {
 
     private final JPanel panel;
+    private final ScaraGUI owner;
 
-    public CreateAppModal(JFrame owner, JPanel panel, String title){
+    public CreateAppModal(ScaraGUI owner, JPanel panel, String title){
         super(owner, title, true);
         this.panel = panel;
+        this.owner = owner;
     }
 
     public void createModal(){
@@ -99,8 +101,14 @@ public class CreateAppModal extends JDialog {
                     try {
                         File directory = new File(location);
                         if (!directory.exists()) {
-                            directory.mkdirs();
+                            if (!directory.mkdirs()) {
+                                JOptionPane.showMessageDialog(this, "Failed to create the directory.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                         }
+                        if (!directory.getAbsolutePath().contains(System.getProperty("user.dir")))
+                            owner.getLocationsConfiguration().addApplication(file.getAbsolutePath());
+
 
                         ApplicationConfiguration configuration = new ApplicationConfiguration(directory, new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");
                         configuration.loadConfiguration();
