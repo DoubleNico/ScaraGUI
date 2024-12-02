@@ -84,17 +84,18 @@ public class CreationOperation extends JPanel {
         );
         operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
         if (!selectedOperation.getOperation().getName().equals(operation.getName())) {
+            int index = operations.indexOf(selectedOperation);
             operations.remove(selectedOperation);
             OperationItem newOperation = new OperationItem(operation.getName(), operation, parent);
             newOperation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
             newOperation.setMaximumSize(new Dimension(230, 58));
-            operations.add(newOperation);
+            operations.add(index, newOperation);
+            remove(selectedOperation);
+            loadOperation(newOperation);
             updateOperationsPanel();
             revalidate();
             repaint();
         }
-        selectedOperation.setOperation(operation);
-        operationsHandler.addOperationItem(operation.getName(), selectedOperation);
         hasSaved = true;
         OperationModel operationModel = new OperationModel(
             operations.indexOf(selectedOperation),
