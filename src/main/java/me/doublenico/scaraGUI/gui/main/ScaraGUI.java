@@ -75,6 +75,7 @@ public class ScaraGUI extends JFrame {
 
         loadAppButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Select an application file");
             String userDir = System.getProperty("user.dir");
             if (userDir != null) fileChooser.setCurrentDirectory(new File(userDir));
             fileChooser.setFileFilter(new FileFilter() {
