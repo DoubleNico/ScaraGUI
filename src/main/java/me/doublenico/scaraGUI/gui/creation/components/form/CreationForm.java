@@ -1,5 +1,6 @@
 package me.doublenico.scaraGUI.gui.creation.components.form;
 
+import me.doublenico.scaraGUI.gui.RoundedBorder;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 
 import javax.swing.*;
@@ -31,12 +32,7 @@ public class CreationForm extends JPanel {
 
             gbc.gridx = 1;
             gbc.weightx = 0.6;
-            JTextField textField = new JTextField(labels[i].fieldName);
-            textField.setPreferredSize(new Dimension(150, 30));
-            textField.setFont(new Font("Inter", Font.PLAIN, 14));
-            textField.setBackground(new Color(50, 50, 50));
-            textField.setForeground(Color.WHITE);
-            textField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            JTextField textField = createStyledTextField(labels[i].fieldName, i == 0, i == labels.length - 1);
             textField.getDocument().addDocumentListener(new FormListener(parent));
             add(textField, gbc);
             textFields.put(labels[i], textField);
@@ -47,7 +43,6 @@ public class CreationForm extends JPanel {
             add(helpIcon, gbc);
         }
     }
-
     public boolean validateForm() {
         Map<Integer, String> invalidFields = new TreeMap<>();
 
@@ -97,11 +92,23 @@ public class CreationForm extends JPanel {
 
     private JLabel createStyledLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Inter", Font.BOLD, 16));
+        label.setFont(new Font("Inter", Font.BOLD, 20));
         label.setForeground(Color.WHITE);
         return label;
     }
 
+    private JTextField createStyledTextField(String text, boolean isFirst, boolean isLast) {
+        JTextField textField = new JTextField(text);
+        textField.setPreferredSize(new Dimension(150, 45));
+        textField.setFont(new Font("Inter", Font.PLAIN, 14));
+        textField.setBackground(new Color(50, 50, 50));
+        textField.setForeground(Color.WHITE);
+        textField.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(isFirst || isLast ? 10 : 4),
+            BorderFactory.createEmptyBorder(4, 8, 4, 8)
+        ));
+        return textField;
+    }
     public HashMap<CreationLabel, JTextField> getTextFields() {
         return textFields;
     }
