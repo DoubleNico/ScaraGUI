@@ -24,6 +24,7 @@ public class CreationSidebar extends JPanel {
         scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         closeButton = new JButton("X");
+        closeButton.setToolTipText("Close the application");
         closeButton.setFont(new Font("Inter", Font.BOLD, 12));
         closeButton.setBackground(new Color(204, 0, 0));
         closeButton.setForeground(Color.WHITE);
@@ -32,6 +33,7 @@ public class CreationSidebar extends JPanel {
 
         JButton goBackButton = new JButton("<");
         goBackButton.setFont(new Font("Inter", Font.BOLD, 12));
+        goBackButton.setToolTipText("Go back to the main menu");
         goBackButton.setBackground(new Color(204, 0, 0));
         goBackButton.setForeground(Color.WHITE);
         goBackButton.setFocusPainted(false);
