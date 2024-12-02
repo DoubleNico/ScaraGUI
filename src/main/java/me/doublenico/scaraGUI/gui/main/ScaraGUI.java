@@ -93,16 +93,26 @@ public class ScaraGUI extends JFrame {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-                System.out.println("Loaded application: " + selectedFile.getAbsolutePath());
-                locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
+
+                if (selectedFile == null) {
+                    JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (selectedFile.exists() && selectedFile.isDirectory()) {
+                    JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (!selectedFile.getAbsolutePath().contains(System.getProperty("user.dir"))) locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
+
                 try {
                     ApplicationModel application = mapper.readValue(selectedFile, ApplicationModel.class);
                     if (application != null && application.getName() != null) {
                         ApplicationConfiguration configuration = new ApplicationConfiguration(selectedFile.getParentFile(), selectedFile.getName());
                         new AppCreationGUI(configuration).setVisible(true);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Invalid application file.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    } else JOptionPane.showMessageDialog(this, "Invalid application file.", "Error", JOptionPane.ERROR_MESSAGE);
+
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(this, "Failed to load application: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();

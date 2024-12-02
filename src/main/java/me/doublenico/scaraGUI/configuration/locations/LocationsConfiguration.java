@@ -52,12 +52,19 @@ public class LocationsConfiguration {
         }
     }
 
+    public void removeApplication(String filePath) {
+        System.out.println("Removing application: " + filePath);
+        locationsModel.getApplications().remove(filePath);
+        saveConfiguration();
+    }
+
     public List<String> getApplications() {
         return locationsModel.getApplications();
     }
 
     public List<File> getValidApplications() {
         List<File> validApps = new ArrayList<>();
+        List<File> invalidApps = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         for (String path : locationsModel.getApplications()) {
             File file = new File(path);
@@ -68,8 +75,10 @@ public class LocationsConfiguration {
                 } catch (IOException e) {
                     System.err.println("Invalid application configuration: " + file.getAbsolutePath());
                 }
-            }
+            } else
+                invalidApps.add(file);
         }
+        invalidApps.forEach(e -> removeApplication(e.getAbsolutePath()));
         return validApps;
     }
 }

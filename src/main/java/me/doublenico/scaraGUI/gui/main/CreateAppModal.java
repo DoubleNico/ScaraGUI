@@ -109,7 +109,6 @@ public class CreateAppModal extends JDialog {
                         if (!directory.getAbsolutePath().contains(System.getProperty("user.dir")))
                             owner.getLocationsConfiguration().addApplication(file.getAbsolutePath());
 
-
                         ApplicationConfiguration configuration = new ApplicationConfiguration(directory, new ExtensionUtils(name).getFileNameWithoutExtension() + ".yml");
                         configuration.loadConfiguration();
 
