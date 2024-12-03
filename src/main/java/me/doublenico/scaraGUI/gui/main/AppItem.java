@@ -1,19 +1,24 @@
 package me.doublenico.scaraGUI.gui.main;
 
+import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.gui.main.buttons.appItem.DeleteButton;
+import me.doublenico.scaraGUI.gui.main.buttons.appItem.ModifyButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-class AppItem extends JPanel {
+public class AppItem extends JPanel {
     private final File appFile;
     private final JPanel parentPanel;
+    private final ScaraGUI owner;
 
-    public AppItem(String appName, File appFile, JPanel parentPanel) {
+    public AppItem(String appName, File appFile, JPanel parentPanel, ScaraGUI owner) {
         this.appFile = appFile;
         this.parentPanel = parentPanel;
+        this.owner = owner;
 
         setLayout(new BorderLayout());
         setOpaque(true);
@@ -32,23 +37,11 @@ class AppItem extends JPanel {
         labelPanel.add(appLabel);
         labelPanel.add(Box.createHorizontalGlue());
 
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.setBackground(new Color(204, 0, 0));
-        deleteButton.setFont(new Font("Inter", Font.BOLD, 12));
-        deleteButton.setForeground(Color.WHITE);
-        deleteButton.setFocusPainted(false);
-        deleteButton.setOpaque(true);
-        deleteButton.setPreferredSize(new Dimension(80, 30));
-        deleteButton.addActionListener(e -> deleteApp());
+        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP);
+        deleteButton.loadEventListener(this);
 
-        JButton modifyButton = new JButton("Modify");
-        modifyButton.setBackground(new Color(0, 122, 204));
-        modifyButton.setFont(new Font("Inter", Font.BOLD, 12));
-        modifyButton.setForeground(Color.WHITE);
-        modifyButton.setFocusPainted(false);
-        modifyButton.setOpaque(true);
-        modifyButton.setPreferredSize(new Dimension(80, 30));
-        modifyButton.addActionListener(e -> modifyApp());
+        ModifyButton modifyButton = new ModifyButton(owner.getButtonManager(), "Modify", ButtonType.LOAD_APP);
+        modifyButton.loadEventListener(this);
 
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setOpaque(false);
@@ -69,7 +62,7 @@ class AppItem extends JPanel {
         add(buttonPanel, BorderLayout.EAST);
     }
 
-    private void deleteApp() {
+    public void deleteApp() {
         int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this application?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             if (appFile.delete()) {
@@ -80,8 +73,20 @@ class AppItem extends JPanel {
         }
     }
 
-    private void modifyApp() {
+    public void modifyApp() {
         ApplicationConfiguration configuration = new ApplicationConfiguration(appFile.getParentFile(), appFile.getName());
-        new AppCreationGUI(configuration).setVisible(true);
+        new AppCreationGUI(configuration, owner).setVisible(true);
+    }
+
+    public File getAppFile() {
+        return appFile;
+    }
+
+    public JPanel getParentPanel() {
+        return parentPanel;
+    }
+
+    public ScaraGUI getOwner() {
+        return owner;
     }
 }

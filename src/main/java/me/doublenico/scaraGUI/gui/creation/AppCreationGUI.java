@@ -12,6 +12,7 @@ import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandle
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
+import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
@@ -27,7 +28,7 @@ public class AppCreationGUI extends JFrame {
     private final CreationForm formPanel;
     private final ApplicationConfiguration configuration;
 
-    public AppCreationGUI(ApplicationConfiguration configuration) {
+    public AppCreationGUI(ApplicationConfiguration configuration, ScaraGUI owner) {
         super("Editing " + configuration.getFileName());
         this.configuration = configuration;
         FlatMacDarkLaf.setup();
@@ -63,7 +64,7 @@ public class AppCreationGUI extends JFrame {
         JButton saveButton = createStyledButton("Save", new Color(0, 122, 204));
         openSidebarButton.setVisible(false);
 
-        settingsButton.addActionListener(e -> new SettingsGui().setVisible(true));
+        settingsButton.addActionListener(e -> new SettingsGui(owner).setVisible(true));
 
         sideBar.getCloseButton().addActionListener(e -> {
             sideBar.setVisible(false);

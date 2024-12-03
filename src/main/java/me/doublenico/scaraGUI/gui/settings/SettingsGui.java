@@ -3,6 +3,10 @@ package me.doublenico.scaraGUI.gui.settings;
 import com.fazecast.jSerialComm.SerialPort;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.button.ButtonType;
+import me.doublenico.scaraGUI.gui.main.ScaraGUI;
+import me.doublenico.scaraGUI.gui.settings.buttons.ConnectButton;
+import me.doublenico.scaraGUI.gui.settings.buttons.RefreshButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +18,7 @@ public class SettingsGui extends JFrame {
     private JPanel deviceListPanel;
     private JLabel selectedDeviceLabel;
 
-    public SettingsGui() {
+    public SettingsGui(ScaraGUI owner) {
         super("Settings");
         FlatMacDarkLaf.setup();
         if (SystemInfo.isMacFullWindowContentSupported) {
@@ -49,11 +53,10 @@ public class SettingsGui extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(22, 22, 23));
 
-        JButton refreshButton = createStyledButton("Refresh", new Color(204, 0, 0));
-        JButton connectButton = createStyledButton("Connect", new Color(0, 204, 0));
-
-        refreshButton.addActionListener(e -> refreshDeviceList());
-        connectButton.addActionListener(e -> connectToDevice());
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
+        refreshButton.loadEventListener(this);
+        ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
+        connectButton.loadEventListener(this);
 
         bottomPanel.add(refreshButton);
         bottomPanel.add(connectButton);
@@ -81,7 +84,7 @@ public class SettingsGui extends JFrame {
         return scrollPane;
     }
 
-    private void refreshDeviceList() {
+    public void refreshDeviceList() {
         deviceListPanel.removeAll();
 
         SerialPort[] portNames = SerialPort.getCommPorts();
@@ -129,7 +132,7 @@ public class SettingsGui extends JFrame {
         return label;
     }
 
-    private void connectToDevice() {
+    public void connectToDevice() {
         if (selectedDeviceLabel == null) {
             JOptionPane.showMessageDialog(this, "Please select a device first.", "No Device Selected", JOptionPane.WARNING_MESSAGE);
         } else {
@@ -138,14 +141,4 @@ public class SettingsGui extends JFrame {
         }
     }
 
-    private JButton createStyledButton(String text, Color bgColor) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Inter", Font.BOLD, 12));
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(100, 40));
-        button.setBorder(BorderFactory.createEmptyBorder());
-        return button;
-    }
 }

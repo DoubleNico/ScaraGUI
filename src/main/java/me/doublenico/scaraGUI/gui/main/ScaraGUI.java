@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
+import me.doublenico.scaraGUI.button.ButtonManager;
+import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.locations.LocationsConfiguration;
-import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
-import me.doublenico.scaraGUI.gui.settings.SettingsGui;
-import me.doublenico.scaraGUI.utils.FileUtils;
+import me.doublenico.scaraGUI.gui.main.buttons.CreateNewAppButton;
+import me.doublenico.scaraGUI.gui.main.buttons.LoadAppButton;
+import me.doublenico.scaraGUI.gui.main.buttons.SettingsButton;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import java.util.List;
 public class ScaraGUI extends JFrame {
 
     private JPanel appItemsPanel;
+    private final ButtonManager buttonManager;
     private final LocationsConfiguration locationsConfiguration;
 
     public ScaraGUI() {
@@ -49,6 +50,7 @@ public class ScaraGUI extends JFrame {
         }
 
         locationsConfiguration = new LocationsConfiguration(new File(System.getProperty("user.dir") + File.separator + "config"));
+        buttonManager = new ButtonManager();
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(10, 10));
@@ -64,75 +66,11 @@ public class ScaraGUI extends JFrame {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
 
-        JButton loadAppButton = new JButton("Load App");
-        loadAppButton.setBackground(new Color(9, 125, 201));
-        loadAppButton.setForeground(Color.WHITE);
-        loadAppButton.setFont(new Font("Inter", Font.BOLD, 12));
-        loadAppButton.setFocusPainted(false);
-        loadAppButton.setOpaque(true);
-        loadAppButton.setPreferredSize(new Dimension(105, 33));
-        loadAppButton.setMinimumSize(new Dimension(105, 33));
-        loadAppButton.setMaximumSize(new Dimension(105, 33));
+        LoadAppButton loadAppButton = new LoadAppButton(buttonManager, "Load App", ButtonType.LOAD_APP);
+        loadAppButton.loadEventListener(this);
 
-        loadAppButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Select an application file");
-            String userDir = System.getProperty("user.dir");
-            if (userDir != null) fileChooser.setCurrentDirectory(new File(userDir));
-            fileChooser.setFileFilter(new FileFilter() {
-                @Override
-                public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".yml");
-                }
-
-                @Override
-                public String getDescription() {
-                    return "YAML Files (*.yml)";
-                }
-            });
-
-            int returnValue = fileChooser.showOpenDialog(this);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
-                if (selectedFile == null) {
-                    JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (selectedFile.exists() && selectedFile.isDirectory()) {
-                    JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (new FileUtils().handleSelectedFile(selectedFile))
-                    locationsConfiguration.addApplication(selectedFile.getAbsolutePath());
-
-                try {
-                    ApplicationModel application = mapper.readValue(selectedFile, ApplicationModel.class);
-                    if (application != null && application.getName() != null) {
-                        ApplicationConfiguration configuration = new ApplicationConfiguration(selectedFile.getParentFile(), selectedFile.getName());
-                        new AppCreationGUI(configuration).setVisible(true);
-                    } else JOptionPane.showMessageDialog(this, "Invalid application file.", "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Failed to load application: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        JButton settingsButton = new JButton("Settings");
-        settingsButton.setBackground(new Color(37, 41, 45));
-        settingsButton.setForeground(Color.WHITE);
-        settingsButton.setFont(new Font("Inter", Font.BOLD, 12));
-        settingsButton.setFocusPainted(false);
-        settingsButton.setOpaque(true);
-        settingsButton.setPreferredSize(new Dimension(105, 33));
-        settingsButton.setMinimumSize(new Dimension(105, 33));
-        settingsButton.setMaximumSize(new Dimension(105, 33));
-        settingsButton.addActionListener(e -> new SettingsGui().setVisible(true));
+        SettingsButton settingsButton = new SettingsButton(buttonManager, "Settings", ButtonType.LOAD_APP);
+        settingsButton.loadEventListener(this);
 
         topPanel.add(titleLabel);
         topPanel.add(Box.createHorizontalGlue());
@@ -145,16 +83,8 @@ public class ScaraGUI extends JFrame {
         centerPanel.setPreferredSize(new Dimension(468, 400));
         centerPanel.setOpaque(false);
 
-        JButton createNewAppButton = new JButton("Create new SCARA App");
-        createNewAppButton.setBackground(new Color(42, 255, 13));
-        createNewAppButton.setForeground(Color.BLACK);
-        createNewAppButton.setFont(new Font("Inter", Font.BOLD, 16));
-        createNewAppButton.setFocusPainted(false);
-        createNewAppButton.setOpaque(true);
-        createNewAppButton.setBorder(BorderFactory.createEmptyBorder());
-        createNewAppButton.setPreferredSize(new Dimension(214, 49));
-
-        createNewAppButton.addActionListener(e -> new CreateAppModal(this, appItemsPanel, "Create new SCARA App").createModal());
+        CreateNewAppButton createNewAppButton = new CreateNewAppButton(buttonManager, "Create new Scara App", ButtonType.LOAD_APP);
+        createNewAppButton.loadEventListener(this, appItemsPanel);
 
         centerPanel.add(createNewAppButton);
 
@@ -207,7 +137,7 @@ public class ScaraGUI extends JFrame {
         try {
             ApplicationModel application = mapper.readValue(file, ApplicationModel.class);
             if (application != null && application.getName() != null) {
-                AppItem appItem = new AppItem(application.getName(), file, appItemsPanel);
+                AppItem appItem = new AppItem(application.getName(), file, appItemsPanel, this);
                 appItem.setMaximumSize(new Dimension(468, 60));
                 appItemsPanel.add(appItem);
             }
@@ -218,5 +148,9 @@ public class ScaraGUI extends JFrame {
 
     public LocationsConfiguration getLocationsConfiguration() {
         return locationsConfiguration;
+    }
+
+    public ButtonManager getButtonManager() {
+        return buttonManager;
     }
 }
