@@ -75,6 +75,7 @@ public class AppItem extends JPanel {
 
     public void modifyApp() {
         ApplicationConfiguration configuration = new ApplicationConfiguration(appFile.getParentFile(), appFile.getName());
+        owner.dispose();
         new AppCreationGUI(configuration, owner).setVisible(true);
     }
 
