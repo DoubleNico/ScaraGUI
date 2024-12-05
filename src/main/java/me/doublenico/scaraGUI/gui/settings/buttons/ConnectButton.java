@@ -1,9 +1,11 @@
 package me.doublenico.scaraGUI.gui.settings.buttons;
 
+import com.fazecast.jSerialComm.SerialPort;
+import me.doublenico.scaraGUI.arduino.ArduinoManager;
+import me.doublenico.scaraGUI.arduino.serial.SerialPortCallback;
 import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
-import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,12 @@ public class ConnectButton extends Button {
         setBorder(BorderFactory.createEmptyBorder());
     }
 
-    public void loadEventListener(SettingsGui settings){
-        addActionListener(e -> settings.connectToDevice());
+    public void loadEventListener(ArduinoManager arduinoManager, SerialPortCallback callback) {
+        addActionListener(e -> {
+            SerialPort serialPort = arduinoManager.connectToDevice();
+            if (serialPort != null) {
+                callback.onSerialPortConnected(serialPort);
+            }
+        });
     }
 }
