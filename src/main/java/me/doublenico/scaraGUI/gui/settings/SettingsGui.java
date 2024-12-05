@@ -3,6 +3,9 @@ package me.doublenico.scaraGUI.gui.settings;
 import com.fazecast.jSerialComm.SerialPort;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.arduino.ArduinoManager;
+import me.doublenico.scaraGUI.arduino.serial.SerialPortParameters;
+import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.gui.settings.buttons.ConnectButton;
@@ -15,8 +18,10 @@ import java.awt.event.MouseEvent;
 
 public class SettingsGui extends JFrame {
 
+    private final ArduinoManager arduinoManager;
     private JPanel deviceListPanel;
     private JLabel selectedDeviceLabel;
+    private SerialPort selectedPort;
 
     public SettingsGui(ScaraGUI owner) {
         super("Settings");
@@ -29,6 +34,10 @@ public class SettingsGui extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(500, 600);
         setLocationRelativeTo(null);
+
+        SerialPortParameters serialPortParameters = new SerialPortParameters(115200, 8, 1, 0);
+        SerialPortTimeouts serialPortTimeouts = new SerialPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
+        arduinoManager = new ArduinoManager(this, selectedDeviceLabel, serialPortParameters, serialPortTimeouts);
 
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.setBackground(new Color(22, 22, 23));
@@ -49,20 +58,23 @@ public class SettingsGui extends JFrame {
         centerPanel.add(scrollPane);
         contentPane.add(centerPanel, BorderLayout.CENTER);
 
-
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(22, 22, 23));
 
         RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
         refreshButton.loadEventListener(this);
         ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
-        connectButton.loadEventListener(this);
+        connectButton.loadEventListener(arduinoManager, serialPort -> {
+            selectedPort = serialPort;
+            updateConnectButton(connectButton);
+        });
 
         bottomPanel.add(refreshButton);
         bottomPanel.add(connectButton);
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         refreshDeviceList();
+        updateConnectButton(connectButton);
 
         setVisible(true);
     }
@@ -124,21 +136,37 @@ public class SettingsGui extends JFrame {
                     selectedDeviceLabel.setForeground(Color.WHITE);
                 }
                 selectedDeviceLabel = label;
+                arduinoManager.setSelectedDeviceLabel(selectedDeviceLabel);
                 selectedDeviceLabel.setBackground(new Color(0, 122, 204));
                 selectedDeviceLabel.setForeground(Color.BLACK);
             }
         });
 
+        if (selectedPort != null && selectedPort.getSystemPortName().equals(deviceName)) {
+            selectedDeviceLabel = label;
+            selectedDeviceLabel.setBackground(new Color(0, 122, 204));
+            selectedDeviceLabel.setForeground(Color.BLACK);
+        }
+
         return label;
     }
 
-    public void connectToDevice() {
-        if (selectedDeviceLabel == null) {
-            JOptionPane.showMessageDialog(this, "Please select a device first.", "No Device Selected", JOptionPane.WARNING_MESSAGE);
+    private void updateConnectButton(ConnectButton connectButton) {
+        if (selectedPort != null) {
+            connectButton.setText("Disconnect");
+            connectButton.loadEventListener(arduinoManager, serialPort -> {
+                arduinoManager.disconnectFromDevice();
+                selectedPort = null;
+                connectButton.setText("Connect");
+                refreshDeviceList();
+            });
         } else {
-            String selectedDevice = selectedDeviceLabel.getText();
-            JOptionPane.showMessageDialog(this, "Connecting to: " + selectedDevice, "Connecting", JOptionPane.INFORMATION_MESSAGE);
+            connectButton.setText("Connect");
+            connectButton.loadEventListener(arduinoManager, serialPort -> {
+                System.out.println("Connected to: " + serialPort.getSystemPortName());
+                selectedPort = serialPort;
+                updateConnectButton(connectButton);
+            });
         }
     }
-
 }
