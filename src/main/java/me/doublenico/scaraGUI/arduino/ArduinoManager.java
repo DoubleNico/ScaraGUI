@@ -34,9 +34,9 @@ public class ArduinoManager {
                 selectedPort.setComPortTimeouts(serialPortTimeouts.getTimeoutMode(), serialPortTimeouts.getReadTimeout(), serialPortTimeouts.getWriteTimeout());
                 if (!selectedPort.openPort()) throw new Exception();
                 JOptionPane.showMessageDialog(parent, "Connected to: " + selectedDevice, "Connected", JOptionPane.INFORMATION_MESSAGE);
+                this.selectedPort = selectedPort;
                 return selectedPort;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(parent, "Failed to connect to: " + selectedDevice, "Connection Failed", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
@@ -46,8 +46,11 @@ public class ArduinoManager {
 
     public void disconnectFromDevice() {
         if (selectedPort != null) {
+            String portName = selectedPort.getSystemPortName();
             selectedPort.closePort();
-            JOptionPane.showMessageDialog(parent, "Disconnected from: " + selectedPort.getSystemPortName(), "Disconnected", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "Disconnected from: " + portName, "Disconnected", JOptionPane.INFORMATION_MESSAGE);
+            selectedPort = null;
+            selectedDeviceLabel = null;
         } else {
             JOptionPane.showMessageDialog(parent, "No device connected.", "No Device Connected", JOptionPane.WARNING_MESSAGE);
         }

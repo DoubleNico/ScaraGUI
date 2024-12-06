@@ -9,6 +9,7 @@ import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.gui.settings.buttons.ConnectButton;
+import me.doublenico.scaraGUI.gui.settings.buttons.DisconnectButton;
 import me.doublenico.scaraGUI.gui.settings.buttons.RefreshButton;
 
 import javax.swing.*;
@@ -66,7 +67,7 @@ public class SettingsGui extends JFrame {
         ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
         connectButton.loadEventListener(arduinoManager, serialPort -> {
             selectedPort = serialPort;
-            updateConnectButton(connectButton);
+            updateButtons(bottomPanel, owner);
         });
 
         bottomPanel.add(refreshButton);
@@ -74,7 +75,7 @@ public class SettingsGui extends JFrame {
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         refreshDeviceList();
-        updateConnectButton(connectButton);
+        updateButtons(bottomPanel, owner);
 
         setVisible(true);
     }
@@ -151,22 +152,27 @@ public class SettingsGui extends JFrame {
         return label;
     }
 
-    private void updateConnectButton(ConnectButton connectButton) {
+    private void updateButtons(JPanel bottomPanel, ScaraGUI owner) {
+        bottomPanel.removeAll();
+
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
+        refreshButton.loadEventListener(this);
+        bottomPanel.add(refreshButton);
+
         if (selectedPort != null) {
-            connectButton.setText("Disconnect");
-            connectButton.loadEventListener(arduinoManager, serialPort -> {
-                arduinoManager.disconnectFromDevice();
-                selectedPort = null;
-                connectButton.setText("Connect");
-                refreshDeviceList();
-            });
+            DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.LOAD_APP);
+            disconnectButton.loadEventListener(arduinoManager);
+            bottomPanel.add(disconnectButton);
         } else {
-            connectButton.setText("Connect");
+            ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
             connectButton.loadEventListener(arduinoManager, serialPort -> {
-                System.out.println("Connected to: " + serialPort.getSystemPortName());
                 selectedPort = serialPort;
-                updateConnectButton(connectButton);
+                updateButtons(bottomPanel, owner);
             });
+            bottomPanel.add(connectButton);
         }
+
+        bottomPanel.revalidate();
+        bottomPanel.repaint();
     }
 }
