@@ -7,6 +7,7 @@ import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.configuration.arduino.ArduinoConfiguration;
 import me.doublenico.scaraGUI.configuration.locations.LocationsConfiguration;
 import me.doublenico.scaraGUI.gui.main.buttons.CreateNewAppButton;
 import me.doublenico.scaraGUI.gui.main.buttons.LoadAppButton;
@@ -23,6 +24,7 @@ public class ScaraGUI extends JFrame {
 
     private JPanel appItemsPanel;
     private final ButtonManager buttonManager;
+    private final ArduinoConfiguration arduinoConfiguration;
     private final LocationsConfiguration locationsConfiguration;
 
     public ScaraGUI() {
@@ -50,6 +52,7 @@ public class ScaraGUI extends JFrame {
         }
 
         locationsConfiguration = new LocationsConfiguration(new File(System.getProperty("user.dir") + File.separator + "config"));
+        arduinoConfiguration = new ArduinoConfiguration(new File(System.getProperty("user.dir") + File.separator + "config"));
         buttonManager = new ButtonManager();
 
         JPanel contentPane = new JPanel();
@@ -144,6 +147,10 @@ public class ScaraGUI extends JFrame {
         } catch (IOException e) {
             System.err.println("Failed to load application from file: " + file.getName());
         }
+    }
+
+    public ArduinoConfiguration getArduinoConfiguration() {
+        return arduinoConfiguration;
     }
 
     public LocationsConfiguration getLocationsConfiguration() {
