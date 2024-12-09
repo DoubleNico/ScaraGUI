@@ -1,6 +1,7 @@
 package me.doublenico.scaraGUI.gui.settings.buttons;
 
 import me.doublenico.scaraGUI.arduino.ArduinoManager;
+import me.doublenico.scaraGUI.arduino.serial.SerialPortCallback;
 import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
@@ -19,9 +20,11 @@ public class DisconnectButton extends Button {
         setBorder(BorderFactory.createEmptyBorder());
     }
 
-    public void loadEventListener(ArduinoManager arduinoManager) {
+    public void loadEventListener(ArduinoManager arduinoManager, SerialPortCallback callback) {
         addActionListener(e -> {
-            arduinoManager.disconnectFromDevice();
+            if (arduinoManager.getSelectedPort() != null) {
+                callback.onSerialPortConnected(arduinoManager.getSelectedPort());
+            }
         });
     }
 }
