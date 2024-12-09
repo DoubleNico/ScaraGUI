@@ -1,6 +1,11 @@
 package me.doublenico.scaraGUI.gui.creation.components.operation;
 
+import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.gui.creation.components.operation.buttons.AddButton;
+import me.doublenico.scaraGUI.gui.creation.components.operation.buttons.DeleteButton;
+import me.doublenico.scaraGUI.gui.creation.components.operation.buttons.MoveDownButton;
+import me.doublenico.scaraGUI.gui.creation.components.operation.buttons.MoveUpButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,9 +16,9 @@ public class OperationItem extends JPanel {
 
     private Operation operation;
     private final AppCreationGUI parent;
-    private final JButton deleteButton;
-    private final JButton moveUpButton;
-    private final JButton moveDownButton;
+    private final DeleteButton deleteButton;
+    private final MoveUpButton moveUpButton;
+    private final MoveDownButton moveDownButton;
 
     public OperationItem(String appName, Operation operation, AppCreationGUI parent) {
         this.operation = operation;
@@ -36,14 +41,17 @@ public class OperationItem extends JPanel {
 
         JTextArea appLabel = getJTextArea(appName, parent);
 
-        deleteButton = createButton("x", new Color(204, 0, 0), "Delete this item");
-        deleteButton.addActionListener(e -> parent.getOperationsPanel().deleteOperation(this));
-        JButton addButton = createButton("+", new Color(0, 204, 0), "Add a new item");
+        deleteButton = new DeleteButton(parent.getOwner().getButtonManager(), "x", ButtonType.LOAD_APP);
+        deleteButton.loadEventListener(parent.getOperationsPanel(), this);
+
+        AddButton addButton = new AddButton(parent.getOwner().getButtonManager(), "+", ButtonType.LOAD_APP);
         addButton.addActionListener(e -> parent.getOperationsPanel().addOperation("Operation " + (parent.getOperationsPanel().getOperations().size())));
-        moveUpButton = createButton("^", new Color(9, 125, 201), "Move this item up");
-        moveUpButton.addActionListener(e -> parent.getOperationsPanel().moveOperationUp(this));
-        moveDownButton = createButton("v", new Color(9, 125, 201), "Move this item down");
-        moveDownButton.addActionListener(e -> parent.getOperationsPanel().moveOperationDown(this));
+
+        moveUpButton = new MoveUpButton(parent.getOwner().getButtonManager(), "^", ButtonType.LOAD_APP);
+        moveUpButton.loadEventListener(parent.getOperationsPanel(), this);
+
+        moveDownButton = new MoveDownButton(parent.getOwner().getButtonManager(), "v", ButtonType.LOAD_APP);
+        moveDownButton.loadEventListener(parent.getOperationsPanel(), this);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 5, 0, 5);
@@ -114,18 +122,6 @@ public class OperationItem extends JPanel {
 
     public void setDeleteEnabled(boolean enabled) {
         deleteButton.setEnabled(enabled);
-    }
-
-    private JButton createButton(String text, Color bgColor, String toolTip) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Inter", Font.BOLD, 8));
-        button.setForeground(Color.BLACK);
-        button.setBackground(bgColor);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
-        button.setPreferredSize(new Dimension(25, 20));
-        button.setToolTipText(toolTip);
-        return button;
     }
 
     private boolean checkSavedConfirm(){
