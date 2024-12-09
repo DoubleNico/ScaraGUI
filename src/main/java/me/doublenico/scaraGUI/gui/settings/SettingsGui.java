@@ -20,9 +20,10 @@ import java.awt.event.MouseEvent;
 public class SettingsGui extends JFrame {
 
     private final ArduinoManager arduinoManager;
+    private final JPanel bottomPanel;
+    private JScrollPane scrollPane;
     private JPanel deviceListPanel;
     private JLabel selectedDeviceLabel;
-    private SerialPort selectedPort;
 
     public SettingsGui(ScaraGUI owner) {
         super("Settings");
@@ -55,18 +56,18 @@ public class SettingsGui extends JFrame {
         centerPanel.setOpaque(false);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
-        JScrollPane scrollPane = createDeviceList();
+        scrollPane = createDeviceList();
         centerPanel.add(scrollPane);
         contentPane.add(centerPanel, BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(22, 22, 23));
 
         RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
         refreshButton.loadEventListener(this);
         ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
         connectButton.loadEventListener(arduinoManager, serialPort -> {
-            selectedPort = serialPort;
+            arduinoManager.setSelectedPort(serialPort);
             updateButtons(bottomPanel, owner);
         });
 
@@ -78,6 +79,13 @@ public class SettingsGui extends JFrame {
         updateButtons(bottomPanel, owner);
 
         setVisible(true);
+    }
+
+    public SettingsGui(ScaraGUI owner, SerialPort serialPort){
+        this(owner);
+        arduinoManager.setSelectedPort(serialPort);
+        updateButtons(bottomPanel, owner);
+        refreshDeviceList();
     }
 
     private JScrollPane createDeviceList() {
@@ -132,6 +140,11 @@ public class SettingsGui extends JFrame {
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (arduinoManager.getSelectedPort() != null && !arduinoManager.getSelectedPort().getSystemPortName().equals(deviceName)) {
+                    JOptionPane.showMessageDialog(SettingsGui.this, "Please disconnect from the current device first.", "Device Already Connected", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
                 if (selectedDeviceLabel != null) {
                     selectedDeviceLabel.setBackground(new Color(50, 50, 50));
                     selectedDeviceLabel.setForeground(Color.WHITE);
@@ -143,7 +156,8 @@ public class SettingsGui extends JFrame {
             }
         });
 
-        if (selectedPort != null && selectedPort.getSystemPortName().equals(deviceName)) {
+        if (arduinoManager.getSelectedPort() != null && arduinoManager.getSelectedPort().getSystemPortName().equals(deviceName)) {
+            System.out.println("Selected device: " + deviceName);
             selectedDeviceLabel = label;
             selectedDeviceLabel.setBackground(new Color(0, 122, 204));
             selectedDeviceLabel.setForeground(Color.BLACK);
@@ -159,14 +173,19 @@ public class SettingsGui extends JFrame {
         refreshButton.loadEventListener(this);
         bottomPanel.add(refreshButton);
 
-        if (selectedPort != null) {
+        if (arduinoManager.getSelectedPort() != null) {
             DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.LOAD_APP);
-            disconnectButton.loadEventListener(arduinoManager);
+            disconnectButton.loadEventListener(arduinoManager, serialPort -> {
+                arduinoManager.disconnectFromDevice();
+                owner.getArduinoConfiguration().removeArduinoSerialPort();
+                updateButtons(bottomPanel, owner);
+            });
             bottomPanel.add(disconnectButton);
         } else {
             ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
             connectButton.loadEventListener(arduinoManager, serialPort -> {
-                selectedPort = serialPort;
+                arduinoManager.setSelectedPort(serialPort);
+                owner.getArduinoConfiguration().addArduinoSerialPort(serialPort.getSystemPortName());
                 updateButtons(bottomPanel, owner);
             });
             bottomPanel.add(connectButton);
