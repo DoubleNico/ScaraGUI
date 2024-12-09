@@ -1,15 +1,19 @@
 package me.doublenico.scaraGUI.gui.creation.components.sidebar;
 
-import me.doublenico.scaraGUI.gui.main.ScaraGUI;
+import me.doublenico.scaraGUI.button.ButtonType;
+import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
+import me.doublenico.scaraGUI.gui.creation.components.sidebar.buttons.BackButton;
+import me.doublenico.scaraGUI.gui.creation.components.sidebar.buttons.CloseButton;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CreationSidebar extends JPanel {
 
-    private final JButton closeButton;
+    private final CloseButton closeButton;
 
-    public CreationSidebar(JFrame parent, JPanel operationsPanel) {
+    public CreationSidebar(AppCreationGUI parent, CreationOperation operationsPanel) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(38, 38, 38));
         setPreferredSize(new Dimension(250, 600));
@@ -23,25 +27,10 @@ public class CreationSidebar extends JPanel {
         scaraName.setForeground(Color.WHITE);
         scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        closeButton = new JButton("X");
-        closeButton.setToolTipText("Close the application");
-        closeButton.setFont(new Font("Inter", Font.BOLD, 12));
-        closeButton.setBackground(new Color(204, 0, 0));
-        closeButton.setForeground(Color.WHITE);
-        closeButton.setFocusPainted(false);
-        closeButton.setPreferredSize(new Dimension(40, 30));
+        closeButton = new CloseButton(parent.getOwner().getButtonManager(), "x", ButtonType.LOAD_APP);
 
-        JButton goBackButton = new JButton("<");
-        goBackButton.setFont(new Font("Inter", Font.BOLD, 12));
-        goBackButton.setToolTipText("Go back to the main menu");
-        goBackButton.setBackground(new Color(204, 0, 0));
-        goBackButton.setForeground(Color.WHITE);
-        goBackButton.setFocusPainted(false);
-        goBackButton.setPreferredSize(new Dimension(40, 30));
-        goBackButton.addActionListener(e -> {
-            new ScaraGUI().setVisible(true);
-            parent.dispose();
-        });
+        BackButton goBackButton = new BackButton(parent.getOwner().getButtonManager(), "<", ButtonType.LOAD_APP);
+        goBackButton.loadEventListener(parent);
 
         headerPanel.add(scaraName);
         headerPanel.add(Box.createHorizontalGlue());
@@ -66,7 +55,7 @@ public class CreationSidebar extends JPanel {
         add(operationsScrollPane);
     }
 
-    public JButton getCloseButton() {
+    public CloseButton getCloseButton() {
         return closeButton;
     }
 }
