@@ -3,9 +3,14 @@ package me.doublenico.scaraGUI.gui.creation;
 import com.formdev.flatlaf.extras.FlatDesktop;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.util.SystemInfo;
+import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.application.OperationModel;
+import me.doublenico.scaraGUI.gui.creation.buttons.DeleteButton;
+import me.doublenico.scaraGUI.gui.creation.buttons.SaveButton;
+import me.doublenico.scaraGUI.gui.creation.buttons.SettingsButton;
+import me.doublenico.scaraGUI.gui.creation.buttons.SidebarButton;
 import me.doublenico.scaraGUI.gui.creation.components.operation.Operation;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandler;
@@ -13,7 +18,6 @@ import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
-import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +31,11 @@ public class AppCreationGUI extends JFrame {
     private final CreationOperation operationsPanel;
     private final CreationForm formPanel;
     private final ApplicationConfiguration configuration;
+    private final ScaraGUI owner;
 
     public AppCreationGUI(ApplicationConfiguration configuration, ScaraGUI owner) {
         super("Editing " + configuration.getFileName());
+        this.owner = owner;
         this.configuration = configuration;
         FlatMacDarkLaf.setup();
 
@@ -58,29 +64,21 @@ public class AppCreationGUI extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         buttonPanel.setBackground(new Color(22, 22, 23));
 
-        JButton openSidebarButton = createStyledButton(">", new Color(0, 122, 204));
-        JButton settingsButton = createStyledButton("Settings", new Color(37, 41, 45));
-        JButton deleteButton = createStyledButton("Delete", new Color(204, 0, 0));
-        JButton saveButton = createStyledButton("Save", new Color(0, 122, 204));
+        SidebarButton openSidebarButton = new SidebarButton(owner.getButtonManager(), ">", ButtonType.LOAD_APP);
+        openSidebarButton.loadEventListener(sideBar, contentPane);
+
+        SettingsButton settingsButton = new SettingsButton(owner.getButtonManager(), "Settings", ButtonType.LOAD_APP);
+        settingsButton.loadEventListener(owner);
+
+        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP);
+        deleteButton.loadEventListener();
+
+        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP);
+        saveButton.loadEventListener(operationsPanel);
+
         openSidebarButton.setVisible(false);
 
-        settingsButton.addActionListener(e -> new SettingsGui(owner).setVisible(true));
-
-        sideBar.getCloseButton().addActionListener(e -> {
-            sideBar.setVisible(false);
-            openSidebarButton.setVisible(true);
-            contentPane.revalidate();
-            contentPane.repaint();
-        });
-
-        openSidebarButton.addActionListener(e -> {
-            sideBar.setVisible(true);
-            openSidebarButton.setVisible(false);
-            contentPane.revalidate();
-            contentPane.repaint();
-        });
-
-        saveButton.addActionListener(e -> operationsPanel.saveOperation());
+        sideBar.getCloseButton().loadEventListener(sideBar, openSidebarButton, contentPane);
 
         buttonPanel.add(settingsButton);
         buttonPanel.add(deleteButton);
@@ -129,17 +127,6 @@ public class AppCreationGUI extends JFrame {
         });
     }
 
-    private JButton createStyledButton(String text, Color bgColor) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Inter", Font.BOLD, 12));
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(80, 30));
-        button.setBorder(BorderFactory.createEmptyBorder());
-        return button;
-    }
-
     public ApplicationConfiguration getConfiguration() {
         return configuration;
     }
@@ -150,5 +137,10 @@ public class AppCreationGUI extends JFrame {
 
     public CreationForm getFormPanel() {
         return formPanel;
+    }
+
+    @Override
+    public ScaraGUI getOwner() {
+        return owner;
     }
 }
