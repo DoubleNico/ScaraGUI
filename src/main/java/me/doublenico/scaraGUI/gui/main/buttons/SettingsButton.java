@@ -4,7 +4,7 @@ import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
-import me.doublenico.scaraGUI.gui.settings.SettingsGui;
+import me.doublenico.scaraGUI.utils.SettingsActionListenerUtils;
 
 import java.awt.*;
 
@@ -23,6 +23,6 @@ public class SettingsButton extends Button {
     }
 
     public void loadEventListener(ScaraGUI owner){
-        addActionListener(e -> new SettingsGui(owner).setVisible(true));
+        new SettingsActionListenerUtils(this).loadEventListener(owner);
     }
 }
