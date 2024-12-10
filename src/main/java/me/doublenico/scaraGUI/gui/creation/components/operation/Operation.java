@@ -22,6 +22,10 @@ public class Operation {
         this.speed = speed;
     }
 
+    public boolean isValidOperation(int defaultValue){
+        return joint1 != defaultValue && joint2 != defaultValue && z != defaultValue && gripper != defaultValue && speed != defaultValue;
+    }
+
     public String getName() {
         return name;
     }
