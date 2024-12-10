@@ -7,10 +7,7 @@ import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.application.OperationModel;
-import me.doublenico.scaraGUI.gui.creation.buttons.DeleteButton;
-import me.doublenico.scaraGUI.gui.creation.buttons.SaveButton;
-import me.doublenico.scaraGUI.gui.creation.buttons.SettingsButton;
-import me.doublenico.scaraGUI.gui.creation.buttons.SidebarButton;
+import me.doublenico.scaraGUI.gui.creation.buttons.*;
 import me.doublenico.scaraGUI.gui.creation.components.operation.Operation;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandler;
@@ -76,6 +73,9 @@ public class AppCreationGUI extends JFrame {
         SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP);
         saveButton.loadEventListener(operationsPanel);
 
+        RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.LOAD_APP);
+        runButton.loadEventListener(operationsPanel);
+
         openSidebarButton.setVisible(false);
 
         sideBar.getCloseButton().loadEventListener(sideBar, openSidebarButton, contentPane);
@@ -83,6 +83,7 @@ public class AppCreationGUI extends JFrame {
         buttonPanel.add(settingsButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(saveButton);
+        buttonPanel.add(runButton);
         buttonPanel.add(openSidebarButton);
         rightPanel.add(buttonPanel, BorderLayout.NORTH);
 
