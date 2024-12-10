@@ -14,6 +14,7 @@ import java.util.List;
 public class CreationOperation extends JPanel {
 
     private OperationItem selectedOperation;
+    private final int DEFAULT_VALUE = -1;
     private boolean hasSaved = false;
     private final AppCreationGUI parent;
     private final OperationsHandler operationsHandler;
@@ -37,27 +38,27 @@ public class CreationOperation extends JPanel {
                     break;
                 }
                 case JOINT1: {
-                    if (operation.getJoint1() != 0) textField.setText(String.valueOf(operation.getJoint1()));
+                    if (operation.getJoint1() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint1()));
                     else textField.setText(label.fieldName);
                     break;
                 }
                 case JOINT2: {
-                    if (operation.getJoint2() != 0) textField.setText(String.valueOf(operation.getJoint2()));
+                    if (operation.getJoint2() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint2()));
                     else textField.setText(label.fieldName);
                     break;
                 }
                 case Z: {
-                    if (operation.getZ() != 0) textField.setText(String.valueOf(operation.getZ()));
+                    if (operation.getZ() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getZ()));
                     else textField.setText(label.fieldName);
                     break;
                 }
                 case GRIPPER: {
-                    if (operation.getGripper() != 0) textField.setText(String.valueOf(operation.getGripper()));
+                    if (operation.getGripper() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getGripper()));
                     else textField.setText(label.fieldName);
                     break;
                 }
                 case SPEED: {
-                    if (operation.getSpeed() != 0) textField.setText(String.valueOf(operation.getSpeed()));
+                    if (operation.getSpeed() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getSpeed()));
                     else textField.setText(label.fieldName);
                     break;
                 }
@@ -118,9 +119,27 @@ public class CreationOperation extends JPanel {
 
     public void addOperation(String name) {
         if (operationsHandler == null) return;
-        OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, 0,0, 0, 0, 0), parent);
+        OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, DEFAULT_VALUE,DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE), parent);
         operationsHandler.addOperationItem(name, operation);
         addOperationItem(operation);
+    }
+
+    public void runOperation() {
+        if (selectedOperation == null) return;
+        if (!parent.getFormPanel().validateForm()) return;
+        System.out.println("Running operation: " + selectedOperation.getOperation().getName());
+    }
+
+    public void runApplication(){
+        if (selectedOperation == null) return;
+        if (!parent.getFormPanel().validateForm()) return;
+        for (OperationItem operation : operations) {
+            if (!operation.getOperation().isValidOperation(DEFAULT_VALUE)){
+                JOptionPane.showMessageDialog(this, "Operation: " + operation.getOperation().getName() + " is invalid.", "Invalid Operation", JOptionPane.WARNING_MESSAGE);
+                continue;
+            }
+            System.out.println("Running operation: " + operation.getOperation().getName());
+        }
     }
 
     public void addOperation(OperationItem operationItem) {
@@ -218,7 +237,6 @@ public class CreationOperation extends JPanel {
             }
         }
     }
-
 
     public List<OperationItem> getOperations() {
         return operations;
