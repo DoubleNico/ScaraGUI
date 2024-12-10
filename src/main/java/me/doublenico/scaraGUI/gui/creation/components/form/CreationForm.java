@@ -2,6 +2,7 @@ package me.doublenico.scaraGUI.gui.creation.components.form;
 
 import me.doublenico.scaraGUI.gui.RoundedBorder;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.utils.IntegerUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +52,7 @@ public class CreationForm extends JPanel {
             if (text.isEmpty()) {
                 invalidFields.put(label.position, emptyFieldMessage(label.name));
             } else if (label != CreationLabel.NAME) {
-                if (isInteger(text)) {
+                if (new IntegerUtils().isInteger(text)) {
                     if (Integer.parseInt(text) < 0) {
                         invalidFields.put(label.position, negativeFieldMessage(label.name));
                     }
@@ -67,15 +68,6 @@ public class CreationForm extends JPanel {
         }
 
         return true;
-    }
-
-    public boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
     public String emptyFieldMessage(String field) {
