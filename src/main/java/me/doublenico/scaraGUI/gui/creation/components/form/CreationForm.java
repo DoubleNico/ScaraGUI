@@ -42,6 +42,7 @@ public class CreationForm extends JPanel {
             gbc.gridx = 2;
             gbc.weightx = 0.1;
             JLabel helpIcon = new JLabel(new ImageIcon("src/main/resources/help-icon.png"));
+            helpIcon.setToolTipText("Click here for help for " + labels[i].name);
             helpIcon.setMaximumSize(new Dimension(40, 40));
             add(helpIcon, gbc);
         }
