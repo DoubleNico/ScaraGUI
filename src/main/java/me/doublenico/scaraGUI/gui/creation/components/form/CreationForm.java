@@ -29,11 +29,13 @@ public class CreationForm extends JPanel {
             gbc.gridy = i;
             gbc.weightx = 0.4;
             JLabel label = createStyledLabel(labels[i].name);
+            label.setToolTipText(labels[i].tooltip);
             add(label, gbc);
 
             gbc.gridx = 1;
             gbc.weightx = 0.6;
             JTextField textField = createStyledTextField(labels[i].fieldName, i == 0, i == labels.length - 1);
+            textField.setToolTipText(labels[i].tooltip);
             textField.getDocument().addDocumentListener(new FormListener(parent));
             add(textField, gbc);
             textFields.put(labels[i], textField);

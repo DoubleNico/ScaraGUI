@@ -1,19 +1,21 @@
 package me.doublenico.scaraGUI.gui.creation.components.form;
 
 public enum CreationLabel {
-    NAME("Name", "Name", 0),
-    JOINT1("Joint 1", "Angle", 1),
-    JOINT2("Joint 2","Angle", 2),
-    Z("Z","Position", 3),
-    GRIPPER("Gripper", "Value", 4),
-    SPEED("Speed","Value", 5);
+    NAME("Name", "This will be the name of the operation" , "Name", 0),
+    JOINT1("Joint 1", "Value of the first joint" , "Angle", 1),
+    JOINT2("Joint 2", "Value of the second joint", "Angle", 2),
+    Z("Z", "This is the position in Z" , "Position", 3),
+    GRIPPER("Gripper", "The gripper is the thing that holds the object, it can be open or closed", "Value", 4),
+    SPEED("Speed", "This is the speed of the motors" , "Value", 5);
 
     public final String name;
+    public final String tooltip;
     public final String fieldName;
     public final int position;
 
-    CreationLabel(String name, String fieldName, int position) {
+    CreationLabel(String name, String tooltip, String fieldName, int position) {
         this.name = name;
+        this.tooltip = tooltip;
         this.fieldName = fieldName;
         this.position = position;
     }
@@ -31,5 +33,13 @@ public enum CreationLabel {
 
     public int getPosition() {
         return position;
+    }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 }
