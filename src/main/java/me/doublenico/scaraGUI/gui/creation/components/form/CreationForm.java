@@ -6,6 +6,8 @@ import me.doublenico.scaraGUI.utils.IntegerUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 
 public class CreationForm extends JPanel {
@@ -43,6 +45,13 @@ public class CreationForm extends JPanel {
             gbc.weightx = 0.1;
             JLabel helpIcon = new JLabel(new ImageIcon("src/main/resources/help-icon.png"));
             helpIcon.setToolTipText("Click here for help for " + labels[i].name);
+            int finalI = i;
+            helpIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    labels[finalI].getHelp().showModal(parent);
+                }
+            });
             helpIcon.setMaximumSize(new Dimension(40, 40));
             add(helpIcon, gbc);
         }
