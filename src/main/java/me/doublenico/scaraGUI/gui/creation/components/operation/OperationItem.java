@@ -41,16 +41,16 @@ public class OperationItem extends JPanel {
 
         JTextArea appLabel = getJTextArea(appName, parent);
 
-        deleteButton = new DeleteButton(parent.getOwner().getButtonManager(), "x", ButtonType.LOAD_APP, parent);
+        deleteButton = new DeleteButton(parent.getOwner().getButtonManager(), "x", ButtonType.DELETE_BUTTON, parent);
         deleteButton.loadEventListener(parent.getOperationsPanel(), this);
 
-        AddButton addButton = new AddButton(parent.getOwner().getButtonManager(), "+", ButtonType.LOAD_APP, parent);
+        AddButton addButton = new AddButton(parent.getOwner().getButtonManager(), "+", ButtonType.ADD_BUTTON, parent);
         addButton.addActionListener(e -> parent.getOperationsPanel().addOperation("Operation " + (parent.getOperationsPanel().getOperations().size())));
 
-        moveUpButton = new MoveUpButton(parent.getOwner().getButtonManager(), "^", ButtonType.LOAD_APP, parent);
+        moveUpButton = new MoveUpButton(parent.getOwner().getButtonManager(), "^", ButtonType.MOVE_UP_BUTTON, parent);
         moveUpButton.loadEventListener(parent.getOperationsPanel(), this);
 
-        moveDownButton = new MoveDownButton(parent.getOwner().getButtonManager(), "v", ButtonType.LOAD_APP, parent);
+        moveDownButton = new MoveDownButton(parent.getOwner().getButtonManager(), "v", ButtonType.MOVE_DOWN_BUTTON, parent);
         moveDownButton.loadEventListener(parent.getOperationsPanel(), this);
 
         GridBagConstraints gbc = new GridBagConstraints();
