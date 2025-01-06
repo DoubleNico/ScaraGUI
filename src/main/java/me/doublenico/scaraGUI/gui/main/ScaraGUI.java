@@ -2,13 +2,13 @@ package me.doublenico.scaraGUI.gui.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.arduino.ArduinoConfiguration;
 import me.doublenico.scaraGUI.configuration.locations.LocationsConfiguration;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
+import me.doublenico.scaraGUI.frame.ApplicationFrameType;
 import me.doublenico.scaraGUI.gui.main.buttons.CreateNewAppButton;
 import me.doublenico.scaraGUI.gui.main.buttons.LoadAppButton;
 import me.doublenico.scaraGUI.gui.main.buttons.SettingsButton;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ScaraGUI extends JFrame {
+public class ScaraGUI extends ApplicationFrame {
 
     private JPanel appItemsPanel;
     private final ButtonManager buttonManager;
@@ -29,9 +29,6 @@ public class ScaraGUI extends JFrame {
 
     public ScaraGUI() {
         super("ScaraGUI");
-        FlatMacDarkLaf.setup();
-        if(SystemInfo.isMacFullWindowContentSupported) getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
-
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 600);
@@ -121,6 +118,11 @@ public class ScaraGUI extends JFrame {
         setVisible(true);
     }
 
+    @Override
+    public ApplicationFrameType getFrameType() {
+        return ApplicationFrameType.SCARA_GUI;
+    }
+
     private void loadApplications() {
         String userDir = System.getProperty("user.dir");
         if (userDir == null) return;
@@ -160,4 +162,5 @@ public class ScaraGUI extends JFrame {
     public ButtonManager getButtonManager() {
         return buttonManager;
     }
+
 }
