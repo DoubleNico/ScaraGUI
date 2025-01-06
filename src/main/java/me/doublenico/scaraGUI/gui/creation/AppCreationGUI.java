@@ -7,6 +7,8 @@ import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.application.OperationModel;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
+import me.doublenico.scaraGUI.frame.ApplicationFrameType;
 import me.doublenico.scaraGUI.gui.creation.buttons.*;
 import me.doublenico.scaraGUI.gui.creation.components.operation.Operation;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
@@ -23,7 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-public class AppCreationGUI extends JFrame {
+public class AppCreationGUI extends ApplicationFrame {
 
     private final CreationOperation operationsPanel;
     private final CreationForm formPanel;
@@ -61,19 +63,19 @@ public class AppCreationGUI extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         buttonPanel.setBackground(new Color(22, 22, 23));
 
-        SidebarButton openSidebarButton = new SidebarButton(owner.getButtonManager(), ">", ButtonType.LOAD_APP);
+        SidebarButton openSidebarButton = new SidebarButton(owner.getButtonManager(), ">", ButtonType.LOAD_APP, this);
         openSidebarButton.loadEventListener(sideBar, contentPane);
 
-        SettingsButton settingsButton = new SettingsButton(owner.getButtonManager(), "Settings", ButtonType.LOAD_APP);
+        SettingsButton settingsButton = new SettingsButton(owner.getButtonManager(), "Settings", ButtonType.LOAD_APP, this);
         settingsButton.loadEventListener(owner);
 
-        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP);
+        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP, this);
         deleteButton.loadEventListener();
 
-        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP);
+        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP, this);
         saveButton.loadEventListener(operationsPanel);
 
-        RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.LOAD_APP);
+        RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.LOAD_APP, this);
         runButton.loadEventListener(operationsPanel);
 
         openSidebarButton.setVisible(false);
@@ -143,5 +145,10 @@ public class AppCreationGUI extends JFrame {
     @Override
     public ScaraGUI getOwner() {
         return owner;
+    }
+
+    @Override
+    public ApplicationFrameType getFrameType() {
+        return ApplicationFrameType.APP_CREATION;
     }
 }

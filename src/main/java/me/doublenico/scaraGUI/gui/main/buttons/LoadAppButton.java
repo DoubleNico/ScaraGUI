@@ -7,6 +7,7 @@ import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.utils.FileUtils;
@@ -18,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class LoadAppButton extends Button {
-    public LoadAppButton(ButtonManager manager, String name, ButtonType type) {
-        super(manager, name, type);
+    public LoadAppButton(ButtonManager manager, String name, ButtonType type, ApplicationFrame parent) {
+        super(manager, type, parent, name);
         setBackground(new Color(9, 125, 201));
         setDefaultDesign();
         setFont(new Font("Inter", Font.BOLD, 12));

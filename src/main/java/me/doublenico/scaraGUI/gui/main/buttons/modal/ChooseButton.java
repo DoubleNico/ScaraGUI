@@ -3,14 +3,15 @@ package me.doublenico.scaraGUI.gui.main.buttons.modal;
 import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
 public class ChooseButton extends Button {
-    public ChooseButton(ButtonManager manager, String name, ButtonType type) {
-        super(manager, name, type);
+    public ChooseButton(ButtonManager manager, String name, ButtonType type, ApplicationFrame parent) {
+        super(manager, type, parent, name);
         setBackground(new Color(9, 125, 201));
         setForeground(Color.WHITE);
         setFont(new Font("Inter", Font.BOLD, 12));

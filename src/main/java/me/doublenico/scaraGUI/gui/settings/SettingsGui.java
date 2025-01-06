@@ -7,6 +7,8 @@ import me.doublenico.scaraGUI.arduino.ArduinoManager;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortParameters;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
 import me.doublenico.scaraGUI.button.ButtonType;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
+import me.doublenico.scaraGUI.frame.ApplicationFrameType;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.gui.settings.buttons.ConnectButton;
 import me.doublenico.scaraGUI.gui.settings.buttons.DisconnectButton;
@@ -17,7 +19,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SettingsGui extends JFrame {
+public class SettingsGui extends ApplicationFrame {
 
     private final ArduinoManager arduinoManager;
     private final JPanel bottomPanel;
@@ -27,10 +29,6 @@ public class SettingsGui extends JFrame {
 
     public SettingsGui(ScaraGUI owner) {
         super("Settings");
-        FlatMacDarkLaf.setup();
-        if (SystemInfo.isMacFullWindowContentSupported) {
-            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
-        }
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -63,9 +61,9 @@ public class SettingsGui extends JFrame {
         bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(22, 22, 23));
 
-        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP, this);
         refreshButton.loadEventListener(this);
-        ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
+        ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP, this);
         connectButton.loadEventListener(arduinoManager, serialPort -> {
             arduinoManager.setSelectedPort(serialPort);
             updateButtons(bottomPanel, owner);
@@ -169,12 +167,12 @@ public class SettingsGui extends JFrame {
     private void updateButtons(JPanel bottomPanel, ScaraGUI owner) {
         bottomPanel.removeAll();
 
-        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP);
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP, this);
         refreshButton.loadEventListener(this);
         bottomPanel.add(refreshButton);
 
         if (arduinoManager.getSelectedPort() != null) {
-            DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.LOAD_APP);
+            DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.LOAD_APP, this);
             disconnectButton.loadEventListener(arduinoManager, serialPort -> {
                 arduinoManager.disconnectFromDevice();
                 owner.getArduinoConfiguration().removeArduinoSerialPort();
@@ -182,7 +180,7 @@ public class SettingsGui extends JFrame {
             });
             bottomPanel.add(disconnectButton);
         } else {
-            ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP);
+            ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP, this);
             connectButton.loadEventListener(arduinoManager, serialPort -> {
                 arduinoManager.setSelectedPort(serialPort);
                 owner.getArduinoConfiguration().addArduinoSerialPort(serialPort.getSystemPortName());
@@ -193,5 +191,10 @@ public class SettingsGui extends JFrame {
 
         bottomPanel.revalidate();
         bottomPanel.repaint();
+    }
+
+    @Override
+    public ApplicationFrameType getFrameType() {
+        return ApplicationFrameType.SETTINGS;
     }
 }

@@ -56,7 +56,7 @@ public class CreateAppModal extends JDialog {
         gbc.gridx = 1;
         gbc.gridy = 1;
 
-        ChooseButton chooseButton = new ChooseButton(owner.getButtonManager(), "Browse", ButtonType.LOAD_APP);
+        ChooseButton chooseButton = new ChooseButton(owner.getButtonManager(), "Browse", ButtonType.LOAD_APP, owner);
         chooseButton.loadEventListener(locationField);
 
         JPanel locationPanel = new JPanel(new BorderLayout());
@@ -67,7 +67,7 @@ public class CreateAppModal extends JDialog {
         gbc.gridy = 1;
         add(locationPanel, gbc);
 
-        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP);
+        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP, owner);
         saveButton.loadEventListener(owner, this, nameField, locationField);
 
         gbc.gridx = 1;

@@ -37,10 +37,10 @@ public class AppItem extends JPanel {
         labelPanel.add(appLabel);
         labelPanel.add(Box.createHorizontalGlue());
 
-        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP);
+        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP, owner);
         deleteButton.loadEventListener(this);
 
-        ModifyButton modifyButton = new ModifyButton(owner.getButtonManager(), "Modify", ButtonType.LOAD_APP);
+        ModifyButton modifyButton = new ModifyButton(owner.getButtonManager(), "Modify", ButtonType.LOAD_APP, owner);
         modifyButton.loadEventListener(this);
 
         JPanel buttonPanel = new JPanel(new GridBagLayout());

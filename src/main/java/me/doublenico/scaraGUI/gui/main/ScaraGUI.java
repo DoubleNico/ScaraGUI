@@ -66,10 +66,10 @@ public class ScaraGUI extends ApplicationFrame {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
 
-        LoadAppButton loadAppButton = new LoadAppButton(buttonManager, "Load App", ButtonType.LOAD_APP);
+        LoadAppButton loadAppButton = new LoadAppButton(buttonManager, "Load App", ButtonType.LOAD_APP, this);
         loadAppButton.loadEventListener(this);
 
-        SettingsButton settingsButton = new SettingsButton(buttonManager, "Settings", ButtonType.LOAD_APP);
+        SettingsButton settingsButton = new SettingsButton(buttonManager, "Settings", ButtonType.LOAD_APP, this);
         settingsButton.loadEventListener(this);
 
         topPanel.add(titleLabel);
@@ -83,7 +83,7 @@ public class ScaraGUI extends ApplicationFrame {
         centerPanel.setPreferredSize(new Dimension(468, 400));
         centerPanel.setOpaque(false);
 
-        CreateNewAppButton createNewAppButton = new CreateNewAppButton(buttonManager, "Create new Scara App", ButtonType.LOAD_APP);
+        CreateNewAppButton createNewAppButton = new CreateNewAppButton(buttonManager, "Create new Scara App", ButtonType.LOAD_APP, this);
         createNewAppButton.loadEventListener(this, appItemsPanel);
 
         centerPanel.add(createNewAppButton);

@@ -3,6 +3,7 @@ package me.doublenico.scaraGUI.gui.creation.components.operation.buttons;
 import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
+import me.doublenico.scaraGUI.frame.ApplicationFrame;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.operation.OperationItem;
 
@@ -10,8 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AddButton extends Button {
-    public AddButton(ButtonManager manager, String name, ButtonType type) {
-        super(manager, name, type);
+    public AddButton(ButtonManager manager, String name, ButtonType type, ApplicationFrame parent) {
+        super(manager, type, parent, name);
         setFont(new Font("Inter", Font.BOLD, 8));
         setForeground(Color.BLACK);
         setBackground(new Color(0, 204, 0));
