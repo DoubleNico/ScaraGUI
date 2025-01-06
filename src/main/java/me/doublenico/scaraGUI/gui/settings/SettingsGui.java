@@ -61,9 +61,9 @@ public class SettingsGui extends ApplicationFrame {
         bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(new Color(22, 22, 23));
 
-        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP, this);
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.REFRESH_BUTTON, this);
         refreshButton.loadEventListener(this);
-        ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP, this);
+        ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.CONNECT_BUTTON, this);
         connectButton.loadEventListener(arduinoManager, serialPort -> {
             arduinoManager.setSelectedPort(serialPort);
             updateButtons(bottomPanel, owner);
@@ -167,12 +167,12 @@ public class SettingsGui extends ApplicationFrame {
     private void updateButtons(JPanel bottomPanel, ScaraGUI owner) {
         bottomPanel.removeAll();
 
-        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.LOAD_APP, this);
+        RefreshButton refreshButton = new RefreshButton(owner.getButtonManager(), "Refresh", ButtonType.REFRESH_BUTTON, this);
         refreshButton.loadEventListener(this);
         bottomPanel.add(refreshButton);
 
         if (arduinoManager.getSelectedPort() != null) {
-            DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.LOAD_APP, this);
+            DisconnectButton disconnectButton = new DisconnectButton(owner.getButtonManager(), "Disconnect", ButtonType.DISCONNECT_BUTTON, this);
             disconnectButton.loadEventListener(arduinoManager, serialPort -> {
                 arduinoManager.disconnectFromDevice();
                 owner.getArduinoConfiguration().removeArduinoSerialPort();
@@ -180,7 +180,7 @@ public class SettingsGui extends ApplicationFrame {
             });
             bottomPanel.add(disconnectButton);
         } else {
-            ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.LOAD_APP, this);
+            ConnectButton connectButton = new ConnectButton(owner.getButtonManager(), "Connect", ButtonType.CONNECT_BUTTON, this);
             connectButton.loadEventListener(arduinoManager, serialPort -> {
                 arduinoManager.setSelectedPort(serialPort);
                 owner.getArduinoConfiguration().addArduinoSerialPort(serialPort.getSystemPortName());
