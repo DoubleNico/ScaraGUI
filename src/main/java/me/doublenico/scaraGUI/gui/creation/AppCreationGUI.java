@@ -63,19 +63,19 @@ public class AppCreationGUI extends ApplicationFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         buttonPanel.setBackground(new Color(22, 22, 23));
 
-        SidebarButton openSidebarButton = new SidebarButton(owner.getButtonManager(), ">", ButtonType.LOAD_APP, this);
+        SidebarButton openSidebarButton = new SidebarButton(owner.getButtonManager(), ">", ButtonType.SIDEBAR_BUTTON, this);
         openSidebarButton.loadEventListener(sideBar, contentPane);
 
-        SettingsButton settingsButton = new SettingsButton(owner.getButtonManager(), "Settings", ButtonType.LOAD_APP, this);
+        SettingsButton settingsButton = new SettingsButton(owner.getButtonManager(), "Settings", ButtonType.SETTINGS_BUTTON, this);
         settingsButton.loadEventListener(owner);
 
-        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.LOAD_APP, this);
+        DeleteButton deleteButton = new DeleteButton(owner.getButtonManager(), "Delete", ButtonType.DELETE_BUTTON, this);
         deleteButton.loadEventListener();
 
-        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.LOAD_APP, this);
+        SaveButton saveButton = new SaveButton(owner.getButtonManager(), "Save", ButtonType.SAVE_BUTTON, this);
         saveButton.loadEventListener(operationsPanel);
 
-        RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.LOAD_APP, this);
+        RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.RUN_BUTTON, this);
         runButton.loadEventListener(operationsPanel);
 
         openSidebarButton.setVisible(false);
