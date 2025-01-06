@@ -1,5 +1,21 @@
 package me.doublenico.scaraGUI.button;
 
 public enum ButtonType {
+    DELETE_BUTTON,
     LOAD_APP,
+    MODIFY_BUTTON,
+    CHOOSE_BUTTON,
+    SAVE_BUTTON,
+    SETTINGS_BUTTON,
+    CREATE_NEW_APP_BUTTON,
+    REFRESH_BUTTON,
+    CONNECT_BUTTON,
+    DISCONNECT_BUTTON,
+    BACK_BUTTON,
+    MOVE_UP_BUTTON,
+    MOVE_DOWN_BUTTON,
+    ADD_BUTTON,
+    CLOSE_BUTTON,
+    SIDEBAR_BUTTON,
+    RUN_BUTTON;
 }
