@@ -27,9 +27,9 @@ public class CreationSidebar extends JPanel {
         scaraName.setForeground(Color.WHITE);
         scaraName.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        closeButton = new CloseButton(parent.getOwner().getButtonManager(), "x", ButtonType.LOAD_APP, parent);
+        closeButton = new CloseButton(parent.getOwner().getButtonManager(), "x", ButtonType.CLOSE_BUTTON, parent);
 
-        BackButton goBackButton = new BackButton(parent.getOwner().getButtonManager(), "<", ButtonType.LOAD_APP, parent);
+        BackButton goBackButton = new BackButton(parent.getOwner().getButtonManager(), "<", ButtonType.BACK_BUTTON, parent);
         goBackButton.loadEventListener(parent);
 
         headerPanel.add(scaraName);
