@@ -103,9 +103,11 @@ public class AppCreationGUI extends ApplicationFrame {
                     entry.getValue().getName(),
                     entry.getValue().getJoint1(),
                     entry.getValue().getJoint2(),
+                    entry.getValue().getJoint3(),
                     entry.getValue().getZ(),
                     entry.getValue().getGripper(),
-                    entry.getValue().getSpeed()
+                    entry.getValue().getSpeed(),
+                    entry.getValue().getAcceleration()
                 );
                 OperationItem operationItem = new OperationItem(entry.getValue().getName(), operation, this);
                 operationsPanel.addOperation(operationItem);
