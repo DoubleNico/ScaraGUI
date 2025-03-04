@@ -1,8 +1,6 @@
 package me.doublenico.scaraGUI.gui.settings;
 
 import com.fazecast.jSerialComm.SerialPort;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.util.SystemInfo;
 import me.doublenico.scaraGUI.arduino.ArduinoManager;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortParameters;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
