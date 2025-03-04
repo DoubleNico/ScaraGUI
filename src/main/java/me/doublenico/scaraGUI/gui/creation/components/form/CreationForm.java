@@ -23,7 +23,7 @@ public class CreationForm extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        CreationLabel[] labels = {CreationLabel.NAME, CreationLabel.JOINT1, CreationLabel.JOINT2, CreationLabel.Z, CreationLabel.GRIPPER, CreationLabel.SPEED};
+        CreationLabel[] labels = {CreationLabel.NAME, CreationLabel.JOINT1, CreationLabel.JOINT2, CreationLabel.JOINT3, CreationLabel.Z, CreationLabel.GRIPPER, CreationLabel.SPEED, CreationLabel.ACCELERATION};
         textFields = new HashMap<>();
         for (int i = 0; i < labels.length; i++) {
             if (CreationLabel.getLabel(i) == null) continue;
