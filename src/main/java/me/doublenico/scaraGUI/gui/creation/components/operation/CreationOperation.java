@@ -47,6 +47,11 @@ public class CreationOperation extends JPanel {
                     else textField.setText(label.fieldName);
                     break;
                 }
+                case JOINT3: {
+                    if (operation.getJoint3() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint3()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
                 case Z: {
                     if (operation.getZ() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getZ()));
                     else textField.setText(label.fieldName);
@@ -59,6 +64,11 @@ public class CreationOperation extends JPanel {
                 }
                 case SPEED: {
                     if (operation.getSpeed() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getSpeed()));
+                    else textField.setText(label.fieldName);
+                    break;
+                }
+                case ACCELERATION: {
+                    if (operation.getAcceleration() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getAcceleration()));
                     else textField.setText(label.fieldName);
                     break;
                 }
@@ -79,10 +89,12 @@ public class CreationOperation extends JPanel {
             parent.getFormPanel().getTextFields().get(CreationLabel.NAME).getText(),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT1).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT2).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT3).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.Z).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.GRIPPER).getText()),
-            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText())
-        );
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText()),
+            Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.ACCELERATION).getText())
+            );
         operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
         if (!selectedOperation.getOperation().getName().equals(operation.getName())) {
             int index = operations.indexOf(selectedOperation);
@@ -103,9 +115,11 @@ public class CreationOperation extends JPanel {
             operation.getName(),
             operation.getJoint1(),
             operation.getJoint2(),
+            operation.getJoint3(),
             operation.getZ(),
             operation.getGripper(),
-            operation.getSpeed()
+            operation.getSpeed(),
+            operation.getAcceleration()
         );
         ApplicationConfiguration configuration = parent.getConfiguration();
         ApplicationModel applicationModel = configuration.loadCurrentApplication();
@@ -119,7 +133,7 @@ public class CreationOperation extends JPanel {
 
     public void addOperation(String name) {
         if (operationsHandler == null) return;
-        OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, DEFAULT_VALUE,DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE), parent);
+        OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, DEFAULT_VALUE,DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE), parent);
         operationsHandler.addOperationItem(name, operation);
         addOperationItem(operation);
     }
