@@ -15,6 +15,9 @@ public class OperationModel {
     @JsonProperty("joint2")
     private int joint2;
 
+    @JsonProperty
+    private int joint3;
+
     @JsonProperty("z")
     private int z;
 
@@ -24,16 +27,21 @@ public class OperationModel {
     @JsonProperty("speed")
     private int speed;
 
+    @JsonProperty("acceleration")
+    private int acceleration;
+
     public OperationModel() {}
 
-    public OperationModel(int position, String name, int joint1, int joint2, int z, int gripper, int speed) {
+    public OperationModel(int position, String name, int joint1, int joint2, int joint3, int z, int gripper, int speed, int acceleration) {
         this.position = position;
         this.name = name;
         this.joint1 = joint1;
         this.joint2 = joint2;
+        this.joint3 = joint3;
         this.z = z;
         this.gripper = gripper;
         this.speed = speed;
+        this.acceleration = acceleration;
     }
 
     public int getPosition() {
@@ -90,5 +98,21 @@ public class OperationModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getJoint3() {
+        return joint3;
+    }
+
+    public void setJoint3(int joint3) {
+        this.joint3 = joint3;
+    }
+
+    public int getAcceleration() {
+        return acceleration;
+    }
+
+    public void setAcceleration(int acceleration) {
+        this.acceleration = acceleration;
     }
 }
