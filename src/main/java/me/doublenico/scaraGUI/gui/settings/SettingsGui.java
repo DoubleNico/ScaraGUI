@@ -74,12 +74,15 @@ public class SettingsGui extends ApplicationFrame {
         refreshDeviceList();
         updateButtons(bottomPanel, owner);
 
+        owner.setArduinoManager(arduinoManager);
+
         setVisible(true);
     }
 
     public SettingsGui(ScaraGUI owner, SerialPort serialPort){
         this(owner);
         arduinoManager.setSelectedPort(serialPort);
+        owner.setArduinoManager(arduinoManager);
         updateButtons(bottomPanel, owner);
         refreshDeviceList();
     }
@@ -195,4 +198,5 @@ public class SettingsGui extends ApplicationFrame {
     public ApplicationFrameType getFrameType() {
         return ApplicationFrameType.SETTINGS;
     }
+
 }
