@@ -16,6 +16,8 @@ import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandle
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
+import me.doublenico.scaraGUI.gui.live.MotorTestGUI;
+import me.doublenico.scaraGUI.gui.logs.LogViewerGUI;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 
 import javax.swing.*;
@@ -78,6 +80,22 @@ public class AppCreationGUI extends ApplicationFrame {
         RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.RUN_BUTTON, this);
         runButton.loadEventListener(operationsPanel);
 
+        Button motorTest = new Button("Motor Test");
+        motorTest.setBackground(new Color(22, 22, 23));
+        motorTest.setForeground(Color.WHITE);
+        motorTest.addActionListener(e -> {
+            new MotorTestGUI(this.owner);
+        });
+
+        Button logViewer = new Button("Log Viewer");
+        logViewer.setBackground(new Color(22, 22, 23));
+        logViewer.setForeground(Color.WHITE);
+        logViewer.addActionListener(e -> {
+            if (owner.getArduinoManager() != null)
+                new LogViewerGUI(this.owner, owner.getArduinoManager());
+        });
+
+
         openSidebarButton.setVisible(false);
 
         sideBar.getCloseButton().loadEventListener(sideBar, openSidebarButton, contentPane);
@@ -87,6 +105,9 @@ public class AppCreationGUI extends ApplicationFrame {
         buttonPanel.add(saveButton);
         buttonPanel.add(runButton);
         buttonPanel.add(openSidebarButton);
+        buttonPanel.add(motorTest);
+        buttonPanel.add(logViewer);
+
         rightPanel.add(buttonPanel, BorderLayout.NORTH);
 
         rightPanel.add(formPanel, BorderLayout.CENTER);
