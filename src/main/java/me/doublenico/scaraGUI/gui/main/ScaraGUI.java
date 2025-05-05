@@ -2,6 +2,7 @@ package me.doublenico.scaraGUI.gui.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import me.doublenico.scaraGUI.arduino.ArduinoManager;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ScaraGUI extends ApplicationFrame {
 
     private JPanel appItemsPanel;
+    private ArduinoManager arduinoManager;
     private final ButtonManager buttonManager;
     private final ArduinoConfiguration arduinoConfiguration;
     private final LocationsConfiguration locationsConfiguration;
@@ -163,4 +165,11 @@ public class ScaraGUI extends ApplicationFrame {
         return buttonManager;
     }
 
+    public ArduinoManager getArduinoManager() {
+        return arduinoManager;
+    }
+
+    public void setArduinoManager(ArduinoManager arduinoManager) {
+        this.arduinoManager = arduinoManager;
+    }
 }
