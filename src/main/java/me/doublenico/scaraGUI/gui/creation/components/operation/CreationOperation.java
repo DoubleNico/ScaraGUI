@@ -1,5 +1,6 @@
 package me.doublenico.scaraGUI.gui.creation.components.operation;
 
+import com.fazecast.jSerialComm.SerialPort;
 import me.doublenico.scaraGUI.configuration.application.ApplicationConfiguration;
 import me.doublenico.scaraGUI.configuration.application.ApplicationModel;
 import me.doublenico.scaraGUI.configuration.application.OperationModel;
@@ -8,13 +9,16 @@ import me.doublenico.scaraGUI.gui.creation.components.form.CreationLabel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
 public class CreationOperation extends JPanel {
 
     private OperationItem selectedOperation;
-    private final int DEFAULT_VALUE = -1;
+    private final int DEFAULT_VALUE = -999999;
     private boolean hasSaved = false;
     private final AppCreationGUI parent;
     private final OperationsHandler operationsHandler;
@@ -95,6 +99,7 @@ public class CreationOperation extends JPanel {
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.ACCELERATION).getText())
             );
+        System.out.println("Saving operation: " + operation);
         operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
         if (!selectedOperation.getOperation().getName().equals(operation.getName())) {
             int index = operations.indexOf(selectedOperation);
@@ -139,21 +144,150 @@ public class CreationOperation extends JPanel {
     }
 
     public void runOperation() {
-        if (selectedOperation == null) return;
-        if (!parent.getFormPanel().validateForm()) return;
-        System.out.println("Running operation: " + selectedOperation.getOperation().getName());
+        if (selectedOperation == null) {
+            JOptionPane.showMessageDialog(parent,
+                "No operation selected",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        runOperation(selectedOperation);
     }
 
-    public void runApplication(){
-        if (selectedOperation == null) return;
-        if (!parent.getFormPanel().validateForm()) return;
-        for (OperationItem operation : operations) {
-            if (!operation.getOperation().isValidOperation(DEFAULT_VALUE)){
-                JOptionPane.showMessageDialog(this, "Operation: " + operation.getOperation().getName() + " is invalid.", "Invalid Operation", JOptionPane.WARNING_MESSAGE);
-                continue;
-            }
-            System.out.println("Running operation: " + operation.getOperation().getName());
+    public void runOperation(OperationItem operationItem) {
+        if (operationItem == selectedOperation) {
+            if (parent.getFormPanel().validateForm()) {
+                Operation updatedOperation = new Operation(
+                    operationItem.getOperation().getUuid(),
+                    parent.getFormPanel().getTextFields().get(CreationLabel.NAME).getText(),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT1).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT2).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.JOINT3).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.Z).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.GRIPPER).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText()),
+                    Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.ACCELERATION).getText())
+                );
+
+                operationItem = new OperationItem(updatedOperation.getName(), updatedOperation, parent);
+                System.out.println("Using updated values: " + updatedOperation);
+            } else return;
         }
+
+        SerialPort port = parent.getOwner().getArduinoManager().getSelectedPort();
+        if (port == null || !port.isOpen()) {
+            JOptionPane.showMessageDialog(parent,
+                "No Arduino connected or port is not open",
+                "Connection Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Operation op = operationItem.getOperation();
+
+        try {
+            StringBuilder command = new StringBuilder("CMD:");
+
+            command.append(op.getJoint1() != DEFAULT_VALUE ? op.getJoint1() : 0).append(",");
+            command.append(op.getJoint2() != DEFAULT_VALUE ? op.getJoint2() : 0).append(",");
+            command.append(op.getJoint3() != DEFAULT_VALUE ? op.getJoint3() : 0).append(",");
+            command.append(op.getZ() != DEFAULT_VALUE ? op.getZ() : 100).append(",");
+            command.append(op.getGripper() != DEFAULT_VALUE ? op.getGripper() : 180).append(",");
+            command.append(op.getSpeed() != DEFAULT_VALUE ? op.getSpeed() : 2000).append(",");
+            command.append(op.getAcceleration() != DEFAULT_VALUE ? op.getAcceleration() : 1000);
+            command.append("\n");
+
+            System.out.println("Sending command: " + command);
+            OutputStream outputStream = port.getOutputStream();
+            outputStream.write(command.toString().getBytes(StandardCharsets.UTF_8));
+            outputStream.flush();
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(parent,
+                "Failed to send command to Arduino: " + ex.getMessage(),
+                "Communication Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void runApplication() {
+        if (parent.getOwner().getArduinoManager().getSelectedPort() == null || !parent.getOwner().getArduinoManager().isOpened()) {
+            JOptionPane.showMessageDialog(parent,
+                "No Arduino connected or port is not open.\nPlease connect to an Arduino first.",
+                "Connection Required",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (operations.isEmpty()) {
+            JOptionPane.showMessageDialog(parent,
+                "No operations to run.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ArrayList<OperationItem> sortedOperations = new ArrayList<>(operations);
+        sortedOperations.sort(Comparator.comparingInt(operations::indexOf));
+
+        JDialog progressDialog = new JDialog(parent, "Running Application", true);
+        progressDialog.setSize(300, 150);
+        progressDialog.setLocationRelativeTo(parent);
+        progressDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        JPanel progressPanel = new JPanel(new BorderLayout(10, 10));
+        progressPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        progressPanel.setBackground(new Color(22, 22, 23));
+
+        JLabel statusLabel = new JLabel("Running operations...", SwingConstants.CENTER);
+        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setFont(new Font("Inter", Font.BOLD, 14));
+
+        JProgressBar progressBar = new JProgressBar(0, sortedOperations.size());
+        progressBar.setForeground(new Color(0, 122, 204));
+        progressBar.setBackground(new Color(50, 50, 50));
+        progressBar.setStringPainted(true);
+
+        progressPanel.add(statusLabel, BorderLayout.NORTH);
+        progressPanel.add(progressBar, BorderLayout.CENTER);
+
+        progressDialog.setContentPane(progressPanel);
+
+        Thread runThread = new Thread(() -> {
+            try {
+                for (int i = 0; i < sortedOperations.size(); i++) {
+                    OperationItem item = sortedOperations.get(i);
+                    final int currentIndex = i;
+
+                    SwingUtilities.invokeLater(() -> {
+                        progressBar.setValue(currentIndex + 1);
+                        statusLabel.setText("Running: " + item.getOperation().getName() + " (" + (currentIndex + 1) + "/" + sortedOperations.size() + ")");
+                    });
+
+                    runOperation(item);
+
+                    Thread.sleep(3500);
+                }
+
+                SwingUtilities.invokeLater(() -> {
+                    progressDialog.dispose();
+                    JOptionPane.showMessageDialog(parent,
+                        "Application execution completed successfully.",
+                        "Execution Complete",
+                        JOptionPane.INFORMATION_MESSAGE);
+                });
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(() -> {
+                    progressDialog.dispose();
+                    JOptionPane.showMessageDialog(parent,
+                        "Error running application: " + e.getMessage(),
+                        "Execution Error",
+                        JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        });
+
+        runThread.start();
+        progressDialog.setVisible(true);
     }
 
     public void addOperation(OperationItem operationItem) {

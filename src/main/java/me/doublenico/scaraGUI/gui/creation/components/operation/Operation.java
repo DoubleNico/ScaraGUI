@@ -65,4 +65,19 @@ public class Operation {
     public int getAcceleration() {
         return acceleration;
     }
+
+    @Override
+    public String toString() {
+        return "Operation{" +
+            "uuid=" + uuid +
+            ", name='" + name + '\'' +
+            ", joint1=" + joint1 +
+            ", joint2=" + joint2 +
+            ", joint3=" + joint3 +
+            ", z=" + z +
+            ", gripper=" + gripper +
+            ", speed=" + speed +
+            ", acceleration=" + acceleration +
+            '}';
+    }
 }

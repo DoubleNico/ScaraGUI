@@ -17,9 +17,8 @@ public class RunButton extends Button {
         setForeground(Color.WHITE);
         setFocusPainted(false);
         setPreferredSize(new Dimension(80, 30));
-        setBorder(BorderFactory.createEmptyBorder());
+        setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
     }
-
     public void loadEventListener(CreationOperation operationPanel) {
         addActionListener(e -> {
             JPopupMenu popupMenu = new JPopupMenu();
@@ -30,9 +29,15 @@ public class RunButton extends Button {
             JMenuItem runSelectedOperation = new JMenuItem("Run selected operation");
             runSelectedOperation.setForeground(Color.WHITE);
 
-            runEntireApplication.addActionListener(event -> operationPanel.runApplication());
+            runEntireApplication.addActionListener(event -> {
+                operationPanel.saveOperation();
+                operationPanel.runApplication();
+            });
 
-            runSelectedOperation.addActionListener(event -> operationPanel.runOperation());
+            runSelectedOperation.addActionListener(event -> {
+                operationPanel.saveOperation();
+                operationPanel.runOperation();
+            });
 
             popupMenu.add(runEntireApplication);
             popupMenu.add(runSelectedOperation);

@@ -37,14 +37,23 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
         setSize(700, 500);
         setLocationRelativeTo(null);
 
-        // Check if Arduino is connected, if not, open settings
-        SerialPort serialPort = SerialPort.getCommPort(owner.getArduinoConfiguration().getSerialPort());
+        SerialPort serialPort = owner.getArduinoManager().getSelectedPort();
         if (serialPort == null) {
             JOptionPane.showMessageDialog(this,
-                    "No Arduino connected. Please connect an Arduino first.",
-                    "Connection Required",
-                    JOptionPane.WARNING_MESSAGE);
+                "No Arduino connected. Please connect an Arduino first.",
+                "Connection Required",
+                JOptionPane.WARNING_MESSAGE);
             new SettingsGui(owner);
+            setVisible(false);
+            dispose();
+            return;
+        }
+        if (!owner.getArduinoManager().isOpened()) {
+            JOptionPane.showMessageDialog(this,
+                "Failed to open serial port. Please check your connection.",
+                "Connection Error",
+                JOptionPane.ERROR_MESSAGE);
+            setVisible(false);
             dispose();
             return;
         }
@@ -183,10 +192,8 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
             return;
         }
 
-        // Create a separate thread for reading
         Thread readThread = getThread(serialPort);
 
-        // Add a button to stop the monitoring thread
         JButton stopButton = new JButton("Stop Direct Monitor");
         styleButton(stopButton);
         stopButton.addActionListener(e -> {
@@ -197,13 +204,12 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
             parent.repaint();
         });
 
-        // Add the stop button to the button panel
         for (Component c : getContentPane().getComponents()) {
             if (c instanceof JPanel && ((JPanel)c).getLayout() instanceof BorderLayout) {
                 for (Component innerC : ((JPanel)c).getComponents()) {
                     if (innerC instanceof JPanel && innerC == ((BorderLayout)((JPanel)c).getLayout()).getLayoutComponent(BorderLayout.SOUTH)) {
                         ((JPanel)innerC).add(stopButton);
-                        ((JPanel)innerC).revalidate();
+                        innerC.revalidate();
                         break;
                     }
                 }
@@ -220,28 +226,22 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
             try {
                 logMessage("Starting direct Arduino monitor...");
                 while (!Thread.currentThread().isInterrupted() && serialPort.isOpen()) {
-                    // Check if there are bytes available to read
                     if (inputStream.available() > 0) {
                         int bytesRead = inputStream.read(buffer);
                         if (bytesRead > 0) {
                             String data = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
                             messageBuilder.append(data);
 
-                            // Process complete messages (ending with newline)
                             int newlineIndex;
                             while ((newlineIndex = messageBuilder.indexOf("\n")) >= 0) {
                                 final String completeMessage = messageBuilder.substring(0, newlineIndex).trim();
                                 if (!completeMessage.isEmpty()) {
-                                    // Log complete messages only
-                                    SwingUtilities.invokeLater(() -> {
-                                        logMessage(completeMessage);
-                                    });
+                                    SwingUtilities.invokeLater(() -> logMessage(completeMessage));
                                 }
                                 messageBuilder.delete(0, newlineIndex + 1);
                             }
                         }
                     }
-                    // Small delay to prevent CPU hogging
                     Thread.sleep(50);
                 }
             } catch (IOException e) {

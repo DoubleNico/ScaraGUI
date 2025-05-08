@@ -17,5 +17,8 @@ public enum ButtonType {
     ADD_BUTTON,
     CLOSE_BUTTON,
     SIDEBAR_BUTTON,
+    PRESET_BUTTON,
+    DIRECTIONAL_BUTTON,
+    HOME_BUTTON,
     RUN_BUTTON;
 }

@@ -19,7 +19,8 @@ public class SettingsButton extends Button {
         setForeground(Color.WHITE);
         setFocusPainted(false);
         setPreferredSize(new Dimension(80, 30));
-        setBorder(BorderFactory.createEmptyBorder());
+        setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+        setOpaque(true);
     }
 
     public void loadEventListener(ScaraGUI owner){

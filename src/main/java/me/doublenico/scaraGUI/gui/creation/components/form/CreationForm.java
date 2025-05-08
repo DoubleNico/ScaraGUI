@@ -2,9 +2,14 @@ package me.doublenico.scaraGUI.gui.creation.components.form;
 
 import me.doublenico.scaraGUI.gui.RoundedBorder;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
+import me.doublenico.scaraGUI.gui.creation.components.form.filters.CreationCharacterLimit;
 import me.doublenico.scaraGUI.utils.IntegerUtils;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,6 +42,9 @@ public class CreationForm extends JPanel {
             gbc.gridx = 1;
             gbc.weightx = 0.6;
             JTextField textField = createStyledTextField(labels[i].fieldName, i == 0, i == labels.length - 1);
+            if (labels[i] != CreationLabel.NAME)
+                ((PlainDocument) textField.getDocument()).setDocumentFilter(new CreationCharacterLimit(5));
+
             textField.setToolTipText(labels[i].tooltip);
             textField.getDocument().addDocumentListener(new FormListener(parent));
             add(textField, gbc);
@@ -61,17 +69,11 @@ public class CreationForm extends JPanel {
 
         for (CreationLabel label : textFields.keySet()) {
             String text = textFields.get(label).getText();
-            if (text.isEmpty()) {
-                invalidFields.put(label.position, emptyFieldMessage(label.name));
-            } else if (label != CreationLabel.NAME) {
-                if (new IntegerUtils().isInteger(text)) {
-                    if (Integer.parseInt(text) < 0) {
-                        invalidFields.put(label.position, negativeFieldMessage(label.name));
-                    }
-                } else {
+            if (text.isEmpty()) invalidFields.put(label.position, emptyFieldMessage(label.name));
+            else if (label != CreationLabel.NAME)
+                if (!new IntegerUtils().isInteger(text))
                     invalidFields.put(label.position, badInputMessage(label.name));
-                }
-            }
+
         }
 
         if (!invalidFields.isEmpty()) {
@@ -111,8 +113,10 @@ public class CreationForm extends JPanel {
             new RoundedBorder(isFirst || isLast ? 10 : 4),
             BorderFactory.createEmptyBorder(4, 8, 4, 8)
         ));
+
         return textField;
     }
+
     public HashMap<CreationLabel, JTextField> getTextFields() {
         return textFields;
     }

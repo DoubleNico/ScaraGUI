@@ -54,6 +54,8 @@ public class ScaraGUI extends ApplicationFrame {
         arduinoConfiguration = new ArduinoConfiguration(new File(System.getProperty("user.dir") + File.separator + "config"));
         buttonManager = new ButtonManager();
 
+        if (arduinoConfiguration.getSerialPort() != null && !arduinoConfiguration.getSerialPort().isEmpty()) arduinoManager = new ArduinoManager(arduinoConfiguration.getSerialPort());
+
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(10, 10));
         contentPane.setBackground(new Color(22, 22, 23));

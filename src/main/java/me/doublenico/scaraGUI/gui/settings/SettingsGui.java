@@ -2,8 +2,6 @@ package me.doublenico.scaraGUI.gui.settings;
 
 import com.fazecast.jSerialComm.SerialPort;
 import me.doublenico.scaraGUI.arduino.ArduinoManager;
-import me.doublenico.scaraGUI.arduino.serial.SerialPortParameters;
-import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.frame.ApplicationFrame;
 import me.doublenico.scaraGUI.frame.ApplicationFrameType;
@@ -19,7 +17,7 @@ import java.awt.event.MouseEvent;
 
 public class SettingsGui extends ApplicationFrame {
 
-    private final ArduinoManager arduinoManager;
+    private ArduinoManager arduinoManager;
     private final JPanel bottomPanel;
     private JScrollPane scrollPane;
     private JPanel deviceListPanel;
@@ -33,9 +31,12 @@ public class SettingsGui extends ApplicationFrame {
         setSize(500, 600);
         setLocationRelativeTo(null);
 
-        SerialPortParameters serialPortParameters = new SerialPortParameters(115200, 8, 1, 0);
-        SerialPortTimeouts serialPortTimeouts = new SerialPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
-        arduinoManager = new ArduinoManager(this, selectedDeviceLabel, serialPortParameters, serialPortTimeouts);
+        if (owner.getArduinoManager() != null){
+            arduinoManager = owner.getArduinoManager();
+            if (!arduinoManager.isOpened()) arduinoManager = new ArduinoManager(this, selectedDeviceLabel);
+            else selectedDeviceLabel = arduinoManager.getSelectedDeviceLabel();
+        }
+        else arduinoManager = new ArduinoManager(this, selectedDeviceLabel);
 
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.setBackground(new Color(22, 22, 23));

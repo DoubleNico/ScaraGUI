@@ -80,19 +80,25 @@ public class AppCreationGUI extends ApplicationFrame {
         RunButton runButton = new RunButton(owner.getButtonManager(), "Run", ButtonType.RUN_BUTTON, this);
         runButton.loadEventListener(operationsPanel);
 
-        Button motorTest = new Button("Motor Test");
-        motorTest.setBackground(new Color(22, 22, 23));
+        JButton motorTest = new JButton("Motor Test");
+        motorTest.setFont(new Font("Inter", Font.BOLD, 12));
+        motorTest.setBackground(new Color(35, 117, 30));
         motorTest.setForeground(Color.WHITE);
-        motorTest.addActionListener(e -> {
-            new MotorTestGUI(this.owner);
-        });
+        motorTest.setFocusPainted(true);
+        motorTest.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        motorTest.setPreferredSize(new Dimension(80, 30));
+        motorTest.addActionListener(e -> new MotorTestGUI(this.owner).setVisible(true));
 
-        Button logViewer = new Button("Log Viewer");
-        logViewer.setBackground(new Color(22, 22, 23));
+        JButton logViewer = new JButton("Log Viewer");
+        logViewer.setFont(new Font("Inter", Font.BOLD, 12));
+        logViewer.setBackground(new Color(117, 117, 197));
         logViewer.setForeground(Color.WHITE);
+        logViewer.setFocusPainted(true);
+        logViewer.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        logViewer.setPreferredSize(new Dimension(80, 30));
         logViewer.addActionListener(e -> {
             if (owner.getArduinoManager() != null)
-                new LogViewerGUI(this.owner, owner.getArduinoManager());
+                new LogViewerGUI(this.owner, owner.getArduinoManager()).setVisible(true);
         });
 
 
