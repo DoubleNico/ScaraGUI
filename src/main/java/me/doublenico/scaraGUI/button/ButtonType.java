@@ -20,5 +20,7 @@ public enum ButtonType {
     PRESET_BUTTON,
     DIRECTIONAL_BUTTON,
     HOME_BUTTON,
+    MOTOR_TEST_BUTTON,
+    LOG_VIEWER_BUTTON,
     RUN_BUTTON;
 }

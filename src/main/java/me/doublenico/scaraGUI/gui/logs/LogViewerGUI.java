@@ -44,7 +44,6 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
                 "Connection Required",
                 JOptionPane.WARNING_MESSAGE);
             new SettingsGui(owner);
-            setVisible(false);
             dispose();
             return;
         }
@@ -53,26 +52,22 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
                 "Failed to open serial port. Please check your connection.",
                 "Connection Error",
                 JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
             dispose();
             return;
         }
 
         serialPort.addDataListener(this);
 
-        // Create main panel
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBackground(new Color(22, 22, 23));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create title
         JLabel titleLabel = new JLabel("Arduino Log Viewer", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Inter", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Create log area
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setBackground(new Color(38, 38, 38));
@@ -80,7 +75,6 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
         logArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         logArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Auto-scroll setup
         DefaultCaret caret = (DefaultCaret) logArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
@@ -88,11 +82,9 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50), 1));
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setOpaque(false);
 
-        // Auto-scroll toggle
         JCheckBox autoScrollCheckbox = new JCheckBox("Auto-scroll", true);
         autoScrollCheckbox.setForeground(Color.WHITE);
         autoScrollCheckbox.setBackground(new Color(22, 22, 23));
@@ -106,13 +98,11 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
         });
         buttonPanel.add(autoScrollCheckbox);
 
-        // Clear button
         JButton clearButton = new JButton("Clear Logs");
         styleButton(clearButton);
         clearButton.addActionListener(e -> logArea.setText(""));
         buttonPanel.add(clearButton);
 
-        // Save button
         JButton saveButton = new JButton("Save Logs");
         styleButton(saveButton);
         saveButton.addActionListener(e -> saveLogsToFile());

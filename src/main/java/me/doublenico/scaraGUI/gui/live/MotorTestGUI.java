@@ -33,7 +33,6 @@ public class MotorTestGUI extends ApplicationFrame {
                 "Connection Required",
                 JOptionPane.WARNING_MESSAGE);
             new SettingsGui(owner);
-            setVisible(false);
             dispose();
             return;
         }
@@ -43,10 +42,10 @@ public class MotorTestGUI extends ApplicationFrame {
                 "Failed to open serial port. Please check your connection.",
                 "Connection Error",
                 JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
             dispose();
             return;
         }
+
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBackground(new Color(22, 22, 23));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
