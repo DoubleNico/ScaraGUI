@@ -22,5 +22,5 @@ public enum ButtonType {
     HOME_BUTTON,
     MOTOR_TEST_BUTTON,
     LOG_VIEWER_BUTTON,
-    RUN_BUTTON;
+    RUN_BUTTON
 }

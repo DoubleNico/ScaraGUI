@@ -24,7 +24,7 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
 
     private final ScaraGUI owner;
     private JTextArea logArea;
-    private ArduinoManager arduinoManager;
+    private final ArduinoManager arduinoManager;
     private boolean autoScroll = true;
 
     public LogViewerGUI(ScaraGUI owner, ArduinoManager arduinoManager) {

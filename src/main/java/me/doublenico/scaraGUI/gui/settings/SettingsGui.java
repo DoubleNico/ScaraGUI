@@ -19,7 +19,7 @@ public class SettingsGui extends ApplicationFrame {
 
     private ArduinoManager arduinoManager;
     private final JPanel bottomPanel;
-    private JScrollPane scrollPane;
+    private final JScrollPane scrollPane;
     private JPanel deviceListPanel;
     private JLabel selectedDeviceLabel;
 
