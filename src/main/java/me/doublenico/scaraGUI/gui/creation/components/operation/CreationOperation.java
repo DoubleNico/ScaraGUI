@@ -36,58 +36,66 @@ public class CreationOperation extends JPanel {
         Operation operation = operationItem.getOperation();
         for (CreationLabel label : CreationLabel.values()) {
             JTextField textField = parent.getFormPanel().getTextFields().get(label);
+            textField.setText("");
+
             switch (label) {
                 case NAME: {
                     textField.setText(operation.getName());
                     break;
                 }
                 case JOINT1: {
-                    if (operation.getJoint1() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint1()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getJoint1() != DEFAULT_VALUE ? String.valueOf(operation.getJoint1()) : label.fieldName);
                     break;
                 }
                 case JOINT2: {
-                    if (operation.getJoint2() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint2()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getJoint2() != DEFAULT_VALUE ? String.valueOf(operation.getJoint2()) : label.fieldName);
                     break;
                 }
                 case JOINT3: {
-                    if (operation.getJoint3() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getJoint3()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getJoint3() != DEFAULT_VALUE ? String.valueOf(operation.getJoint3()) : label.fieldName);
                     break;
                 }
                 case Z: {
-                    if (operation.getZ() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getZ()));
-                    else textField.setText(label.fieldName);
+                    System.out.println("Operation " + operation.getName());
+                    System.out.println("Z: " + operation.getZ());
+
+                    textField.setText(operation.getZ() != DEFAULT_VALUE ? String.valueOf(operation.getZ()) : label.fieldName);
                     break;
                 }
                 case GRIPPER: {
-                    if (operation.getGripper() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getGripper()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getGripper() != DEFAULT_VALUE ? String.valueOf(operation.getGripper()) : label.fieldName);
                     break;
                 }
                 case SPEED: {
-                    if (operation.getSpeed() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getSpeed()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getSpeed() != DEFAULT_VALUE ? String.valueOf(operation.getSpeed()) : label.fieldName);
                     break;
                 }
                 case ACCELERATION: {
-                    if (operation.getAcceleration() != DEFAULT_VALUE) textField.setText(String.valueOf(operation.getAcceleration()));
-                    else textField.setText(label.fieldName);
+                    textField.setText(operation.getAcceleration() != DEFAULT_VALUE ? String.valueOf(operation.getAcceleration()) : label.fieldName);
                     break;
                 }
             }
         }
         operationsHandler.addOperationItem(operationItem.getOperation().getName(), operationItem);
+
+        if (selectedOperation != null) {
+            selectedOperation.setBorder(BorderFactory.createEmptyBorder());
+        }
         selectedOperation = operationItem;
         selectedOperation.setBorder(BorderFactory.createLineBorder(new Color(0, 122, 204), 2));
         hasSaved = true;
+
+        SwingUtilities.invokeLater(() -> {
+            parent.getFormPanel().revalidate();
+            parent.getFormPanel().repaint();
+        });
     }
 
     public void saveOperation() {
         if (operationsHandler == null) return;
         if (selectedOperation == null) return;
         if (!parent.getFormPanel().validateForm()) return;
+
         Operation operation = new Operation(
             selectedOperation.getOperation().getUuid(),
             parent.getFormPanel().getTextFields().get(CreationLabel.NAME).getText(),
@@ -98,23 +106,36 @@ public class CreationOperation extends JPanel {
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.GRIPPER).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.SPEED).getText()),
             Integer.parseInt(parent.getFormPanel().getTextFields().get(CreationLabel.ACCELERATION).getText())
-            );
+        );
+
         System.out.println("Saving operation: " + operation);
+
         operationsHandler.removeOperationItem(selectedOperation.getOperation().getName());
+
         if (!selectedOperation.getOperation().getName().equals(operation.getName())) {
             int index = operations.indexOf(selectedOperation);
             operations.remove(selectedOperation);
+
             OperationItem newOperation = new OperationItem(operation.getName(), operation, parent);
             newOperation.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
             newOperation.setMaximumSize(new Dimension(230, 58));
+
             operations.add(index, newOperation);
             remove(selectedOperation);
-            loadOperation(newOperation);
+
+            selectedOperation = newOperation;
+            selectedOperation.setBorder(BorderFactory.createLineBorder(new Color(0, 122, 204), 2));
+            add(newOperation, index);
+
             updateOperationsPanel();
             revalidate();
             repaint();
+        } else {
+            selectedOperation.setOperation(operation);
         }
+
         hasSaved = true;
+
         OperationModel operationModel = new OperationModel(
             operations.indexOf(selectedOperation),
             operation.getName(),
@@ -126,16 +147,17 @@ public class CreationOperation extends JPanel {
             operation.getSpeed(),
             operation.getAcceleration()
         );
+
         ApplicationConfiguration configuration = parent.getConfiguration();
         ApplicationModel applicationModel = configuration.loadCurrentApplication();
         if (applicationModel != null) {
             if (applicationModel.getOperations() == null) applicationModel.setOperations(new HashMap<>());
-
             applicationModel.getOperations().put(operation.getUuid().toString(), operationModel);
             configuration.saveConfiguration(applicationModel);
-        } else System.err.println("Application model could not be loaded.");
+        } else {
+            System.err.println("Application model could not be loaded.");
+        }
     }
-
     public void addOperation(String name) {
         if (operationsHandler == null) return;
         OperationItem operation = new OperationItem(name,new Operation(UUID.randomUUID(), name, DEFAULT_VALUE,DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE), parent);
