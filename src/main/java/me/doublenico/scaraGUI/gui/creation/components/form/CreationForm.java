@@ -1,14 +1,11 @@
 package me.doublenico.scaraGUI.gui.creation.components.form;
 
-import me.doublenico.scaraGUI.gui.RoundedBorder;
+import me.doublenico.scaraGUI.utils.RoundedBorder;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.creation.components.form.filters.CreationCharacterLimit;
 import me.doublenico.scaraGUI.utils.IntegerUtils;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

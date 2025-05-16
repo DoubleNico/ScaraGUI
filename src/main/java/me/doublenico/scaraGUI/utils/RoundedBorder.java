@@ -1,4 +1,4 @@
-package me.doublenico.scaraGUI.gui;
+package me.doublenico.scaraGUI.utils;
 
 import javax.swing.border.Border;
 import java.awt.*;

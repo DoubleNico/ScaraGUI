@@ -16,8 +16,6 @@ import me.doublenico.scaraGUI.gui.creation.components.operation.OperationsHandle
 import me.doublenico.scaraGUI.gui.creation.components.form.CreationForm;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.CreationSidebar;
-import me.doublenico.scaraGUI.gui.live.MotorTestGUI;
-import me.doublenico.scaraGUI.gui.logs.LogViewerGUI;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 
 import javax.swing.*;
