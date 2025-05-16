@@ -28,7 +28,7 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
     private boolean autoScroll = true;
 
     public LogViewerGUI(ScaraGUI owner, ArduinoManager arduinoManager) {
-        super("Arduino Log Viewer");
+        super("Arduino Log Viewer", ApplicationFrameType.LOG_VIEWER);
         this.owner = owner;
         this.arduinoManager = arduinoManager;
 
@@ -266,11 +266,6 @@ public class LogViewerGUI extends ApplicationFrame implements SerialPortMessageL
             serialPort.removeDataListener();
         }
         super.dispose();
-    }
-
-    @Override
-    public ApplicationFrameType getFrameType() {
-        return ApplicationFrameType.LOG_VIEWER;
     }
 
     @Override

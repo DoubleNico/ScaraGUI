@@ -33,7 +33,7 @@ public class AppCreationGUI extends ApplicationFrame {
     private final ScaraGUI owner;
 
     public AppCreationGUI(ApplicationConfiguration configuration, ScaraGUI owner) {
-        super("Editing " + configuration.getFileName());
+        super("Editing " + configuration.getFileName(), ApplicationFrameType.APP_CREATION);
         this.owner = owner;
         this.configuration = configuration;
         FlatMacDarkLaf.setup();
@@ -155,6 +155,16 @@ public class AppCreationGUI extends ApplicationFrame {
 
     @Override
     public void dispose() {
+        for (int i = getFrameType().priority + 1; i < ApplicationFrameType.getAllFrames().size(); i++) {
+            ApplicationFrameType frameType = ApplicationFrameType.getFrameType(i);
+            if (frameType != null) {
+                ApplicationFrame frame = frameType.getFrame();
+                if (frame != null && frame.isVisible()) {
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            }
+        }
         SwingUtilities.invokeLater(ScaraGUI::new);
         super.dispose();
     }
@@ -164,8 +174,4 @@ public class AppCreationGUI extends ApplicationFrame {
         return owner;
     }
 
-    @Override
-    public ApplicationFrameType getFrameType() {
-        return ApplicationFrameType.APP_CREATION;
-    }
 }

@@ -30,7 +30,7 @@ public class ScaraGUI extends ApplicationFrame {
     private final LocationsConfiguration locationsConfiguration;
 
     public ScaraGUI() {
-        super("ScaraGUI");
+        super("ScaraGUI", ApplicationFrameType.SCARA_GUI);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 600);

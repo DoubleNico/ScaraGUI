@@ -18,7 +18,7 @@ public class MotorTestGUI extends ApplicationFrame {
     private int currentPosition = 0;
 
     public MotorTestGUI(ScaraGUI owner) {
-        super("Motor Test");
+        super("Motor Test", ApplicationFrameType.MOTOR_TEST);
         this.owner = owner;
 
         setResizable(true);
@@ -80,11 +80,6 @@ public class MotorTestGUI extends ApplicationFrame {
 
         setContentPane(mainPanel);
         setVisible(true);
-    }
-
-    @Override
-    public ApplicationFrameType getFrameType() {
-        return ApplicationFrameType.MOTOR_TEST;
     }
 
     @Override

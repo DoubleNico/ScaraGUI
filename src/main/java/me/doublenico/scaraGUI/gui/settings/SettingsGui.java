@@ -24,7 +24,7 @@ public class SettingsGui extends ApplicationFrame {
     private JLabel selectedDeviceLabel;
 
     public SettingsGui(ScaraGUI owner) {
-        super("Settings");
+        super("Settings", ApplicationFrameType.SETTINGS);
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -197,11 +197,6 @@ public class SettingsGui extends ApplicationFrame {
 
         bottomPanel.revalidate();
         bottomPanel.repaint();
-    }
-
-    @Override
-    public ApplicationFrameType getFrameType() {
-        return ApplicationFrameType.SETTINGS;
     }
 
 }
