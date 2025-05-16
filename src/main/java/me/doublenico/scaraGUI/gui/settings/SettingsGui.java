@@ -188,6 +188,10 @@ public class SettingsGui extends ApplicationFrame {
                 owner.getArduinoConfiguration().addArduinoSerialPort(serialPort.getSystemPortName());
                 updateButtons(bottomPanel, owner);
             });
+            selectedDeviceLabel = null;
+            arduinoManager.setSelectedDeviceLabel(null);
+            arduinoManager.setSelectedPort(null);
+            refreshDeviceList();
             bottomPanel.add(connectButton);
         }
 

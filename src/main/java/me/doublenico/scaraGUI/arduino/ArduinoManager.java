@@ -5,6 +5,8 @@ import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortParameters;
 import me.doublenico.scaraGUI.arduino.serial.SerialPortTimeouts;
 import me.doublenico.scaraGUI.gui.settings.SettingsGui;
+import me.doublenico.scaraGUI.gui.settings.dialogs.ConnectDialog;
+import me.doublenico.scaraGUI.gui.settings.dialogs.DisconnectDialog;
 
 import javax.swing.*;
 
@@ -40,39 +42,22 @@ public class ArduinoManager {
         if (isOpened) return this.selectedPort;
         if (selectedDeviceLabel == null) {
             JOptionPane.showMessageDialog(parent, "Please select a device first.", "No Device Selected", JOptionPane.WARNING_MESSAGE);
-        } else {
-            String selectedDevice = selectedDeviceLabel.getText();
-            JOptionPane.showMessageDialog(parent, "Connecting to: " + selectedDevice, "Connecting", JOptionPane.INFORMATION_MESSAGE);
-            try {
-                SerialPort selectedPort = SerialPort.getCommPort(selectedDevice);
-                selectedPort.setComPortParameters(serialPortParameters.getBaudRate(), serialPortParameters.getDataBits(), serialPortParameters.getStopBits(), serialPortParameters.getParity());
-                selectedPort.setComPortTimeouts(serialPortTimeouts.getTimeoutMode(), serialPortTimeouts.getReadTimeout(), serialPortTimeouts.getWriteTimeout());
-                if (!selectedPort.openPort()) throw new Exception();
-                JOptionPane.showMessageDialog(parent, "Connected to: " + selectedDevice, "Connected", JOptionPane.INFORMATION_MESSAGE);
-                this.selectedPort = selectedPort;
-                this.isOpened = true;
-                return selectedPort;
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(parent, "Failed to connect to: " + selectedDevice, "Connection Failed", JOptionPane.ERROR_MESSAGE);
-                return null;
-            }
+            return null;
         }
-        return null;
-    }
 
+        new ConnectDialog(parent, this, selectedDeviceLabel, "Connecting to device").setVisible(true);
+
+        return selectedPort;
+    }
     public void disconnectFromDevice() {
-        if (selectedPort != null) {
-            String portName = selectedPort.getSystemPortName();
-            selectedPort.closePort();
-            JOptionPane.showMessageDialog(parent, "Disconnected from: " + portName, "Disconnected", JOptionPane.INFORMATION_MESSAGE);
-            isOpened = false;
-            selectedPort = null;
-            selectedDeviceLabel = null;
-        } else {
+        if (selectedPort == null) {
             JOptionPane.showMessageDialog(parent, "No device connected.", "No Device Connected", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }
 
+        new DisconnectDialog(parent, this, selectedDeviceLabel, "Disconnecting from device").setVisible(true);
+
+    }
     public SerialPort getSelectedPort() {
         return selectedPort;
     }
