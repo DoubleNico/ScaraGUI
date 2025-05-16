@@ -42,7 +42,7 @@ public class AppCreationGUI extends ApplicationFrame {
         getRootPane().putClientProperty("apple.awt.fullscreenable", true);
 
         setResizable(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(954, 600);
         setLocationRelativeTo(null);
 
@@ -151,6 +151,12 @@ public class AppCreationGUI extends ApplicationFrame {
 
     public CreationForm getFormPanel() {
         return formPanel;
+    }
+
+    @Override
+    public void dispose() {
+        SwingUtilities.invokeLater(ScaraGUI::new);
+        super.dispose();
     }
 
     @Override

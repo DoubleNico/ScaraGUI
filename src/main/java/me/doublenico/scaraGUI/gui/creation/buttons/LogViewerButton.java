@@ -1,6 +1,5 @@
 package me.doublenico.scaraGUI.gui.creation.buttons;
 
-import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.button.RoundedButton;

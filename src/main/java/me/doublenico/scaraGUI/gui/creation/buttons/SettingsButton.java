@@ -1,11 +1,9 @@
 package me.doublenico.scaraGUI.gui.creation.buttons;
 
-import me.doublenico.scaraGUI.button.Button;
 import me.doublenico.scaraGUI.button.ButtonManager;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.button.RoundedButton;
 import me.doublenico.scaraGUI.frame.ApplicationFrame;
-import me.doublenico.scaraGUI.utils.RoundedBorder;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
 import me.doublenico.scaraGUI.utils.SettingsActionListenerUtils;
 
