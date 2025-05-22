@@ -3,7 +3,6 @@ package me.doublenico.scaraGUI.gui.creation.components.sidebar;
 import me.doublenico.scaraGUI.button.ButtonType;
 import me.doublenico.scaraGUI.gui.creation.AppCreationGUI;
 import me.doublenico.scaraGUI.gui.creation.components.operation.CreationOperation;
-import me.doublenico.scaraGUI.gui.creation.components.sidebar.buttons.BackButton;
 import me.doublenico.scaraGUI.gui.creation.components.sidebar.buttons.CloseButton;
 
 import javax.swing.*;
@@ -29,12 +28,8 @@ public class CreationSidebar extends JPanel {
 
         closeButton = new CloseButton(parent.getOwner().getButtonManager(), "x", ButtonType.CLOSE_BUTTON, parent);
 
-        BackButton goBackButton = new BackButton(parent.getOwner().getButtonManager(), "<", ButtonType.BACK_BUTTON, parent);
-        goBackButton.loadEventListener(parent);
-
         headerPanel.add(scaraName);
-        headerPanel.add(Box.createHorizontalGlue());
-        headerPanel.add(goBackButton);
+        headerPanel.add(new Box.Filler(new Dimension(65, 30), new Dimension(65, 30), new Dimension(65, 30)));
         headerPanel.add(closeButton);
 
         add(headerPanel);
