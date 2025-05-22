@@ -20,7 +20,7 @@ public class CreateAppModal extends JDialog {
 
     public void createModal(){
         setResizable(false);
-        setSize(400, 300);
+        setSize(500, 300);
         setLayout(new GridBagLayout());
         setLocationRelativeTo(this);
 
@@ -49,7 +49,6 @@ public class CreateAppModal extends JDialog {
         add(locationLabel, gbc);
 
         JTextField locationField = new JTextField();
-        locationField.setPreferredSize(new Dimension(200, 30));
         locationField.setEditable(false);
         String userDir = System.getProperty("user.dir");
         if (userDir != null) locationField.setText(System.getProperty("user.dir"));
