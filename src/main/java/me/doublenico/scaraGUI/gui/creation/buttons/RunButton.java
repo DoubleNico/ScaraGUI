@@ -30,13 +30,13 @@ public class RunButton extends RoundedButton {
             runSelectedOperation.setForeground(Color.WHITE);
 
             runEntireApplication.addActionListener(event -> {
-                operationPanel.saveOperation();
-                operationPanel.runApplication();
+                if (operationPanel.saveOperation())
+                    operationPanel.runApplication();
             });
 
             runSelectedOperation.addActionListener(event -> {
-                operationPanel.saveOperation();
-                operationPanel.runOperation();
+                if (operationPanel.saveOperation())
+                    operationPanel.runOperation();
             });
 
             popupMenu.add(runEntireApplication);

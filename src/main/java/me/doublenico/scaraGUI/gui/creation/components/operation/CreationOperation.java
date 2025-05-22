@@ -91,10 +91,10 @@ public class CreationOperation extends JPanel {
         });
     }
 
-    public void saveOperation() {
-        if (operationsHandler == null) return;
-        if (selectedOperation == null) return;
-        if (!parent.getFormPanel().validateForm()) return;
+    public boolean saveOperation() {
+        if (operationsHandler == null) return false;
+        if (selectedOperation == null) return false;
+        if (!parent.getFormPanel().validateForm()) return false;
 
         Operation operation = new Operation(
             selectedOperation.getOperation().getUuid(),
@@ -154,8 +154,10 @@ public class CreationOperation extends JPanel {
             if (applicationModel.getOperations() == null) applicationModel.setOperations(new HashMap<>());
             applicationModel.getOperations().put(operation.getUuid().toString(), operationModel);
             configuration.saveConfiguration(applicationModel);
+            return true;
         } else {
             System.err.println("Application model could not be loaded.");
+            return false;
         }
     }
     public void addOperation(String name) {
