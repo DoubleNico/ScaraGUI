@@ -13,7 +13,7 @@ import java.awt.*;
 public class CloseButton extends Button {
     public CloseButton(ButtonManager manager, String name, ButtonType type, ApplicationFrame parent) {
         super(manager, type, parent, name);
-        setToolTipText("Close the application");
+        setToolTipText("Close the sidebar");
         setFont(new Font("Inter", Font.BOLD, 12));
         setBackground(new Color(204, 0, 0));
         setForeground(Color.WHITE);

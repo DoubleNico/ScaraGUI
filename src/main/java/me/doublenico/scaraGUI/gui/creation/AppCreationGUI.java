@@ -43,7 +43,7 @@ public class AppCreationGUI extends ApplicationFrame {
 
         setResizable(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(954, 600);
+        setSize(1000, 700);
         setLocationRelativeTo(null);
 
         OperationsHandler operationsHandler = new OperationsHandler();

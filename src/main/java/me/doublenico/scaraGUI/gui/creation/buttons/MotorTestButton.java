@@ -6,6 +6,7 @@ import me.doublenico.scaraGUI.button.RoundedButton;
 import me.doublenico.scaraGUI.frame.ApplicationFrame;
 import me.doublenico.scaraGUI.gui.live.MotorTestGUI;
 import me.doublenico.scaraGUI.gui.main.ScaraGUI;
+import me.doublenico.scaraGUI.gui.settings.SettingsGui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,16 @@ public class MotorTestButton extends RoundedButton {
     }
 
     public void loadEventListener(ScaraGUI owner) {
-        addActionListener(e -> SwingUtilities.invokeLater(() -> new MotorTestGUI(owner)));
+        addActionListener(e -> {
+            if (owner.getArduinoManager() == null) {
+                JOptionPane.showMessageDialog(owner,
+                    "No Arduino connected. Please connect an Arduino first.",
+                    "Connection Required",
+                    JOptionPane.WARNING_MESSAGE);
+                new SettingsGui(owner);
+                return;
+            }
+            SwingUtilities.invokeLater(() -> new MotorTestGUI(owner));
+        });
     }
 }
